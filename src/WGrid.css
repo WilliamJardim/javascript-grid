@@ -1,0 +1,44 @@
+/* Estilo da grid */
+.wgrid{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    background-color: rgb(223, 223, 223);
+}
+
+.linha-grid{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-self: center;
+    justify-content: center; /*Centralizar todas as linhas*/
+    gap: 12px;
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+/* Estilo das colunas da grid DO CABECALHO */
+.elemento-linha-grid{
+    width: 200px;
+    height: 70px;
+    justify-self: center;
+    align-content: center;
+    background-color: rgb(179, 218, 235);
+    border: solid 0.8px black;
+    font-size: 20pt;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.linha-amostra-grid{
+    
+}
+
+/* Estilo das colunas da grid DAS AMOSTRAS */
+.linha-amostra-grid .elemento-linha-grid{
+    background-color: rgb(201, 224, 233);
+    font-weight: normal !important;
+    text-transform: none;
+}

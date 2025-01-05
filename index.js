@@ -16,7 +16,7 @@ const minhaGrid = new WGrid({
             /** Permite editar uma coluna */
             editable: {
                 onChange: function(idInput, valorAtual, novoValor, numLinha, numColuna, nomeColuna, statusColuna, contexto){
-                    debugger
+                   
                 }
             }
             
@@ -25,7 +25,7 @@ const minhaGrid = new WGrid({
             visible: true,
             select: false,
             copy: true,
-            editable: false
+            editable: true
         }
     },
 

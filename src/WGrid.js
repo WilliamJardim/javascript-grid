@@ -118,6 +118,13 @@ class WGrid{
     }
 
     /**
+    * Obtem o indice da coluna 
+    */
+    getIndiceCampo( nome ){
+        return this.nomesColunas.indexOf(nome);
+    }
+
+    /**
     * Obtem as configurações da coluna 
     */
     getStatusColuna( nomeColuna ){
@@ -258,6 +265,13 @@ class WGrid{
     adicionarAmostra( dadosAmostra ){
         this.dados.push(dadosAmostra);
         this.render();
+    }
+
+    /**
+    * edita o valor de uma coluna de uma amostra
+    */
+    setColunaAmostra( numAmostra, numColuna, novoValor ){
+        this.dados[ numAmostra ][ (typeof numColuna == 'number' ? numColuna : typeof numColuna == 'string' ? this.getIndiceCampo(numColuna) : null) ] = novoValor;
     }
 
     /** Desenha a grid no elemento pai */
@@ -404,8 +418,8 @@ class WGrid{
             .querySelectorAll('input')
             .forEach(function( objInput, indiceObjInput ){
                 const idInput      = objInput.id;
-                const numLinha     = objInput.getAttribute('_linha');
-                const numColuna    = objInput.getAttribute('_coluna');
+                const numLinha     = Number( objInput.getAttribute('_linha') );
+                const numColuna    = Number( objInput.getAttribute('_coluna') );
                 const nomeColuna   = contexto.getNomeColuna( numColuna );
                 const statusColuna = contexto.getStatusColuna( nomeColuna );
                 const valorAtual   = objInput.value;
@@ -414,11 +428,16 @@ class WGrid{
                 {
                     objInput.onchange = function(evento){
 
+                        const valorEditado = evento.target.value;
+
+                        //Edita o objeto dados interno
+                        contexto.setColunaAmostra( numLinha, numColuna, valorEditado );
+
                         //Se o editable for um JSON, e dentro dele tiver o callback onChange, ele aplica ele com esses parametros
                         if( typeof statusColuna.editable == 'object' &&
                             statusColuna.editable.onChange
                         ){
-                            statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, evento.target.value, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
+                            statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, valorEditado, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
                         }
                     }
                 

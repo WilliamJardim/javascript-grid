@@ -41,6 +41,14 @@ const minhaGrid = new WGrid({
 
         onClickColuna: function( linha, coluna, nomeColuna, elementoLinha, contexto ){
             
+        },
+
+        beforeRender: function( contexto ){
+            
+        },
+
+        afterRender: function( contexto ){
+            
         }
     }
 });

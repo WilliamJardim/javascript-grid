@@ -116,6 +116,12 @@ class WGrid{
     */
     ocultarColuna( nomeColuna ){
         this.getStatusColuna( nomeColuna ).visible = false;
+
+        //Se existir o callback onEsconderColuna
+        if( this.callbacks.onEsconderColuna ){
+            this.callbacks.onEsconderColuna.bind(this)(this, nomeColuna);
+        }
+
         this.render();
     }
 
@@ -145,6 +151,12 @@ class WGrid{
         }
 
         this.getStatusColuna( nomeColuna ).visible = true;
+
+        //Se existir o callback onExibirColuna
+        if( this.callbacks.onExibirColuna ){
+            this.callbacks.onExibirColuna.bind(this)(this, nomeColuna);
+        }
+
         this.render();
     }
 
@@ -213,6 +225,11 @@ class WGrid{
 
     /** Desenha a grid no elemento pai */
     render() {
+        //Roda o callback beforeRender
+        if( this.callbacks.beforeRender ){
+            this.callbacks.beforeRender.bind(this)( this );
+        }
+
         /**
         * Reseta o que ja foi desenhado anteriormente
         */
@@ -274,6 +291,11 @@ class WGrid{
                     }
                 };
             }
+        }
+
+        //Roda o callback afterRender
+        if( this.callbacks.afterRender ){
+            this.callbacks.afterRender.bind(this)( this );
         }
     }
 }

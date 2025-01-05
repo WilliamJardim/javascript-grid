@@ -7,6 +7,7 @@ class WGrid{
         this.elementoPai   = document.getElementById( this.idElementoPai ); 
         this.tituloGrid    = this.gridConfig.titulo;
         this.nomesColunas  = this.gridConfig.colunas;
+        this.statusColunas = this.gridConfig.status;
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -32,12 +33,17 @@ class WGrid{
         for( let i = 0 ; i < dados.length ; i++ )
         {
             const valorColunaAtual = dados[i];
+            const nomeColunaAtual  = this.getNomeColuna( i );
 
-            htmlColunas += `
-                <div class='elemento-linha-grid'>
-                    ${ valorColunaAtual }
-                </div>
-            `;
+            //Se a coluna está visivel ou se, não existe nenhuma configuração para a coluna
+            if( classeLinha == 'linha-detalhes' || (!this.getStatusColuna( nomeColunaAtual ) || this.getStatusColuna( nomeColunaAtual ).visible == true) )
+            {
+                htmlColunas += `
+                    <div class='elemento-linha-grid'>
+                        ${ valorColunaAtual }
+                    </div>
+                `;
+            }
         }
 
         /**
@@ -48,6 +54,20 @@ class WGrid{
                 ${ htmlColunas }
             </div>
         `;
+    }
+
+    /**
+    * Obtem o nome da coluna 
+    */
+    getNomeColuna( index ){
+        return this.nomesColunas[index];
+    }
+
+    /**
+    * Obtem as configurações da coluna 
+    */
+    getStatusColuna( nomeColuna ){
+        return this.statusColunas[ nomeColuna ] || null;
     }
 
     /**

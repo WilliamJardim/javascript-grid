@@ -37,15 +37,30 @@ class WGrid{
         {
             const valorColunaAtual = dados[i];
             const nomeColunaAtual  = this.getNomeColuna( i );
+            const statusColuna     = this.getStatusColuna( nomeColunaAtual );
 
             /**
             * Se a coluna está visivel ou se, não existe nenhuma configuração para a coluna
             */
-            if( classeLinha == 'linha-detalhes' || (!this.getStatusColuna( nomeColunaAtual ) || this.getStatusColuna( nomeColunaAtual ).visible == true) )
+            if( classeLinha == 'linha-detalhes' || (!statusColuna || statusColuna.visible == true) )
             {
                 htmlColunas += `
                     <div class='elemento-linha-grid' name='coluna-${i}-linha${idLinha}-grid-${this.idElementoPai}'>
-                        ${ valorColunaAtual }
+                        ${ 
+                            //idLinha != '_inicio' significa que ele vai ignorar o cabeçalho
+                            (statusColuna.editable != undefined && statusColuna.editable != false && classeLinha != 'linha-detalhes' && idLinha != '_inicio') 
+                                                          //Se for editavel
+                                                          ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
+                                                                    value=${valorColunaAtual}
+                                                                    class='input-coluna-editavel'
+                                                                    _linha=${idLinha}
+                                                                    _coluna=${i}
+                                                                    _grid=${this.idElementoPai}
+                                                             />`
+
+                                                          //Se não for editavel
+                                                          : valorColunaAtual 
+                        }
                     </div>
                 `;
             }
@@ -319,12 +334,12 @@ class WGrid{
 
                 document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
                     if( contexto.callbacks[ 'onClickColuna' ] ){
-                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
+                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
                     }
 
                     //Se a coluna tiver um evento em statusColunas
                     if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
-                        contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
+                        contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
                     }
 
                     /**
@@ -357,29 +372,59 @@ class WGrid{
 
                 document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
                     if( contexto.callbacks[ 'onLeftClickColuna' ] ){
-                        if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
 
                     if( contexto.callbacks[ 'onMiddleClickColuna' ] ){
-                        if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
 
                     if( contexto.callbacks[ 'onRightClickColuna' ] ){
-                        if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
                     
                     //Se a coluna tiver um evento em statusColunas
                     if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
-                        if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
                     if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
-                        if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
                     if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
-                        if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                        if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
                     }
                 })
             }
+
+            /**
+            * Cria os eventos de edição das colunas da linha 
+            */
+            (document)
+            .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+            .querySelectorAll('input')
+            .forEach(function( objInput, indiceObjInput ){
+                const idInput      = objInput.id;
+                const numLinha     = objInput.getAttribute('_linha');
+                const numColuna    = objInput.getAttribute('_coluna');
+                const nomeColuna   = contexto.getNomeColuna( numColuna );
+                const statusColuna = contexto.getStatusColuna( nomeColuna );
+                const valorAtual   = objInput.value;
+
+                if( statusColuna.editable != undefined )
+                {
+                    objInput.onchange = function(evento){
+
+                        //Se o editable for um JSON, e dentro dele tiver o callback onChange, ele aplica ele com esses parametros
+                        if( typeof statusColuna.editable == 'object' &&
+                            statusColuna.editable.onChange
+                        ){
+                            statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, evento.target.value, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
+                        }
+                    }
+                
+                }
+
+            });
         }
 
         //Roda o callback afterRender

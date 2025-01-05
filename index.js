@@ -11,12 +11,21 @@ const minhaGrid = new WGrid({
         'Name': {
             visible: true,
             select: false,
-            copy: false
+            copy: false,
+
+            /** Permite editar uma coluna */
+            editable: {
+                onChange: function(idInput, valorAtual, novoValor, numLinha, numColuna, nomeColuna, statusColuna, contexto){
+                    debugger
+                }
+            }
+            
         },
         'Age': {
             visible: true,
             select: false,
-            copy: true
+            copy: true,
+            editable: false
         }
     },
 
@@ -39,7 +48,7 @@ const minhaGrid = new WGrid({
             
         },
 
-        onClickColuna: function( linha, coluna, nomeColuna, elementoLinha, contexto ){
+        onClickColuna: function( linha, coluna, nomeColuna, statusColuna, elementoLinha, contexto ){
             
         },
 

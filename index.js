@@ -25,5 +25,18 @@ const minhaGrid = new WGrid({
     ],
     
     titulo: 'Friends',
-    elementoPai: 'div-grid'
+    elementoPai: 'div-grid',
+
+    /**
+    * Eventos 
+    */
+    callbacks: {
+        'onClickLinha': function( linha, elementoLinha, contexto ){
+            
+        },
+
+        'onClickColuna': function( linha, coluna, nomeColuna, elementoLinha, contexto ){
+            
+        }
+    }
 });

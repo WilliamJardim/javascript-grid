@@ -8,6 +8,7 @@ class WGrid{
         this.tituloGrid    = this.gridConfig.titulo;
         this.nomesColunas  = this.gridConfig.colunas;
         this.statusColunas = this.gridConfig.status;
+        this.callbacks     = this.gridConfig.callbacks || {};
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -35,7 +36,9 @@ class WGrid{
             const valorColunaAtual = dados[i];
             const nomeColunaAtual  = this.getNomeColuna( i );
 
-            //Se a coluna está visivel ou se, não existe nenhuma configuração para a coluna
+            /**
+            * Se a coluna está visivel ou se, não existe nenhuma configuração para a coluna
+            */
             if( classeLinha == 'linha-detalhes' || (!this.getStatusColuna( nomeColunaAtual ) || this.getStatusColuna( nomeColunaAtual ).visible == true) )
             {
                 htmlColunas += `
@@ -231,6 +234,7 @@ class WGrid{
         */
         const amostras = this.dados.slice( this.nomesColunas == undefined ? 1 : 0, this.dados.length);
         const qtdeAmostras = amostras.length;
+        const contexto = this;
 
         for( let i = 0 ; i < qtdeAmostras; i++ )
         {   
@@ -238,6 +242,33 @@ class WGrid{
             const amostra = amostras[indice];
         
             this.CriarLinha(amostra, 'linha-amostra-grid', indice);
+        }
+
+        /**
+        * Adicionar eventos nas colunas da linhas
+        */
+        for( let i = 0 ; i < qtdeAmostras ; i++ )
+        {
+            /**
+            * Adicionar eventos na linha 
+            */
+            const idLinha = i;
+            document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
+                if( contexto.callbacks[ 'onClickLinha' ] ){
+                    contexto.callbacks[ 'onClickLinha' ].bind( contexto )( idLinha, evento.target, contexto )
+                }
+            }
+
+            for(let e = 0 ; e < this.dados[0].length ; e++)
+            {
+                const idColuna = e;
+
+                document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
+                    if( contexto.callbacks[ 'onClickColuna' ] ){
+                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto )
+                    }
+                };
+            }
         }
     }
 }

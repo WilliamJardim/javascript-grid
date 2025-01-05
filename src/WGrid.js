@@ -6,6 +6,7 @@ class WGrid{
         this.idElementoPai = this.gridConfig.elementoPai; 
         this.elementoPai   = document.getElementById( this.idElementoPai ); 
         this.tituloGrid    = this.gridConfig.titulo;
+        this.nomesColunas  = this.gridConfig.colunas;
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -49,6 +50,35 @@ class WGrid{
         `;
     }
 
+    /**
+    * Permite renomear todas as colunas
+    * @param {String} nomeColunas 
+    */
+    renomearColunas(nomeColunas){
+        this.nomesColunas = nomeColunas;
+        this.render();
+    }
+
+    /**
+    * Permite renomear uma coluna
+    * @param {String} colunaAntiga 
+    * @param {String} novoNome 
+    */
+    renomearColuna( colunaAntiga, novoNome ){
+        this.nomesColunas = this.nomesColunas.map(( nomeColunaAtual )=>{ return nomeColunaAtual == colunaAntiga ? novoNome : nomeColunaAtual });
+        this.render();
+    }
+
+    /**
+    * Adiciona uma nova amostra
+    * @param {String} colunaAntiga 
+    * @param {String} novoNome 
+    */
+    adicionarAmostra( dadosAmostra ){
+        this.dados.push(dadosAmostra);
+        this.render();
+    }
+
     /** Desenha a grid no elemento pai */
     render() {
         /**
@@ -62,13 +92,15 @@ class WGrid{
         /**
         * Cria o cabeçalho 
         */
-        const dadosCabecalho = this.dados.at(0);
+        const dadosCabecalho = this.nomesColunas || this.dados.at(0);
         this.CriarLinha(dadosCabecalho);
 
         /**
         * Cria as outras linhas 
+        * 
+        * NOTA: Aqui usei 'this.nomesColunas == undefined ? 1 : 0', por que, se voce passar o nome das colunas via propriedade, então ele precisa começar a pegar as amostras a partir do indice zero 
         */
-        const amostras = this.dados.slice(1, this.dados.length);
+        const amostras = this.dados.slice( this.nomesColunas == undefined ? 1 : 0, this.dados.length);
         const qtdeAmostras = amostras.length;
 
         for( let i = 0 ; i < qtdeAmostras; i++ )

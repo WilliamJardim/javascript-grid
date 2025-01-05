@@ -265,7 +265,12 @@ class WGrid{
 
                 document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
                     if( contexto.callbacks[ 'onClickColuna' ] ){
-                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto )
+                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
+                    }
+
+                    //Se a coluna tiver um evento em statusColunas
+                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
+                        contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
                     }
                 };
             }

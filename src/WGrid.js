@@ -296,6 +296,21 @@ class WGrid{
                 }
             }
 
+            document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
+                if( contexto.callbacks[ 'onLeftClickLinha' ] ){
+                    if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                }
+
+                if( contexto.callbacks[ 'onMiddleClickLinha' ] ){
+                    if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                }
+
+                if( contexto.callbacks[ 'onRightClickLinha' ] ){
+                    if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                }
+            });
+
+
             for(let e = 0 ; e < this.dados[0].length ; e++)
             {
                 const idColuna = e;
@@ -310,6 +325,31 @@ class WGrid{
                         contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
                     }
                 };
+
+                document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
+                    if( contexto.callbacks[ 'onLeftClickColuna' ] ){
+                        if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+
+                    if( contexto.callbacks[ 'onMiddleClickColuna' ] ){
+                        if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+
+                    if( contexto.callbacks[ 'onRightClickColuna' ] ){
+                        if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+                    
+                    //Se a coluna tiver um evento em statusColunas
+                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
+                        if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
+                        if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
+                        if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto ); };
+                    }
+                })
             }
         }
 

@@ -9,11 +9,7 @@ const minhaGrid = new WGrid({
     */
     status: {
         'Name': {
-            visible: true,
-            
-            onClick: function(linha, coluna, nomeColuna, elementoLinha, contexto){
-                
-            }
+            visible: true
         },
         'Age': {
             visible: true

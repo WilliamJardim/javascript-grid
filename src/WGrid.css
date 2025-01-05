@@ -2,8 +2,20 @@
 .wgrid{
     display: flex;
     flex-direction: column;
-    width: 40%;
-    background-color: rgb(223, 223, 223);
+    width: 20%;
+}
+
+/*Adicionado um título*/
+.linha-detalhes{
+    width: 100% !important;
+}
+.linha-detalhes .elemento-linha-grid{
+    width: 100% !important;
+    background-color: rgb(92, 73, 79);
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 22pt;
 }
 
 .linha-grid{
@@ -26,6 +38,7 @@
     align-content: center;
     background-color: rgb(179, 218, 235);
     border: solid 0.8px black;
+    border-radius: 16px;
     font-size: 20pt;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-weight: bolder;

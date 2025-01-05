@@ -5,6 +5,7 @@ class WGrid{
         this.dados         = this.gridConfig.dados;
         this.idElementoPai = this.gridConfig.elementoPai; 
         this.elementoPai   = document.getElementById( this.idElementoPai ); 
+        this.tituloGrid    = this.gridConfig.titulo;
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -53,7 +54,10 @@ class WGrid{
         /**
         * Reseta o que ja foi desenhado anteriormente
         */
-        this.elementoPai.innerHTML = '';
+        this.elementoPai.innerHTML = ``;
+
+        //Adiciona um titulo
+        this.CriarLinha([this.tituloGrid], 'linha-detalhes');
 
         /**
         * Cria o cabeçalho 

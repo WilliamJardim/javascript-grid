@@ -88,6 +88,18 @@ class WGrid{
     esconderColuna = this.ocultarColuna;
 
     /**
+    * Esconde varias colunas
+    */
+    ocultarColunas( nomeColunas ){
+        nomeColunas.forEach((nome)=>{ this.ocultarColuna(nome) });
+    }
+
+    /**
+    * Esconde varias colunas
+    */
+    esconderColunas = this.ocultarColunas;
+
+    /**
     * Mostrar uma coluna 
     */
     exibirColuna( nomeColuna ){
@@ -105,11 +117,34 @@ class WGrid{
     mostrarColuna = this.exibirColuna;
 
     /**
+    * Mostrar uma coluna 
+    */
+    exibirColunas( nomeColunas ){
+        nomeColunas.forEach((nome)=>{ this.mostrarColuna(nome) });
+    }
+
+    /**
+    * Mostrar uma coluna 
+    */
+    mostrarColunas = this.exibirColunas;
+
+    /**
     * Permite renomear todas as colunas
     * @param {String} nomeColunas 
     */
     renomearColunas(nomeColunas){
+        const nomesAtuais = this.nomesColunas;
         this.nomesColunas = nomeColunas;
+
+        if( this.statusColunas != undefined ){
+            this.nomesColunas.forEach((novoNome, indice)=>{
+                const colunaAntiga = nomesAtuais[ indice ];
+
+                this.statusColunas[novoNome] = {...this.statusColunas[colunaAntiga]};
+                delete this.statusColunas[colunaAntiga]
+            })
+        }
+
         this.render();
     }
 
@@ -120,6 +155,12 @@ class WGrid{
     */
     renomearColuna( colunaAntiga, novoNome ){
         this.nomesColunas = this.nomesColunas.map(( nomeColunaAtual )=>{ return nomeColunaAtual == colunaAntiga ? novoNome : nomeColunaAtual });
+
+        if( this.statusColunas != undefined ){
+            this.statusColunas[novoNome] = {...this.statusColunas[colunaAntiga]};
+            delete this.statusColunas[colunaAntiga]
+        }
+
         this.render();
     }
 

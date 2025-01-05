@@ -1,9 +1,9 @@
 const minhaGrid = new WGrid({
     dados: [
-        ['Nome',   'Idade'],
+        ['Name',   'Age'],
         ['William', 21],
-        ['Rafael', 25]
+        ['Rafael',  25]
     ],
-    titulo: 'Amigos',
+    titulo: 'Friends',
     elementoPai: 'div-grid'
 });

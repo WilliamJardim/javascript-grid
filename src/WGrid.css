@@ -75,4 +75,5 @@
     background-color: var(--cor-fundo-selecionando);
     transition: 0.3s;
     transform: scale(1.04);
+    cursor: text;
 }

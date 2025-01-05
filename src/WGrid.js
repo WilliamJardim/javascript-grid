@@ -67,8 +67,42 @@ class WGrid{
     * Obtem as configurações da coluna 
     */
     getStatusColuna( nomeColuna ){
+        if(this.statusColunas && !this.statusColunas[nomeColuna]){
+            throw Error(`A coluna '${nomeColuna}' não existe!`);
+        }
+
         return (this.statusColunas || {})[ nomeColuna ] || null;
     }
+
+    /**
+    * Esconder uma coluna 
+    */
+    ocultarColuna( nomeColuna ){
+        this.getStatusColuna( nomeColuna ).visible = false;
+        this.render();
+    }
+
+    /**
+    * Esconder uma coluna 
+    */
+    esconderColuna = this.ocultarColuna;
+
+    /**
+    * Mostrar uma coluna 
+    */
+    exibirColuna( nomeColuna ){
+        if(!nomeColuna){
+            throw Error('Voce precisa passar a coluna!');
+        }
+
+        this.getStatusColuna( nomeColuna ).visible = true;
+        this.render();
+    }
+
+    /**
+    * Mostrar uma coluna 
+    */
+    mostrarColuna = this.exibirColuna;
 
     /**
     * Permite renomear todas as colunas

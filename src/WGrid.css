@@ -1,8 +1,20 @@
+/* Cores */
+:root{
+    --cor-fundo-grid: rgb(255, 188, 188);
+    --cor-fundo-titulo: rgb(160, 85, 109);
+    --cor-coluna-cabecalho: rgb(211, 137, 137);
+    --cor-coluna-amostra: rgb(228, 193, 193);
+}
+
 /* Estilo da grid */
 .wgrid{
     display: flex;
     flex-direction: column;
     width: 20%;
+    border: solid 2px black;
+    border-radius: 16px;
+    padding: 12px;
+    background-color: var(--cor-fundo-grid);
 }
 
 /*Adicionado um título*/
@@ -11,7 +23,9 @@
 }
 .linha-detalhes .elemento-linha-grid{
     width: 100% !important;
-    background-color: rgb(92, 73, 79);
+    margin-top: -5px !important;
+    margin-bottom: 0px;
+    background-color: var(--cor-fundo-titulo);
     color: white;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
@@ -36,7 +50,7 @@
     height: 70px;
     justify-self: center;
     align-content: center;
-    background-color: rgb(179, 218, 235);
+    background-color: var(--cor-coluna-cabecalho);
     border: solid 0.8px black;
     border-radius: 16px;
     font-size: 20pt;
@@ -51,7 +65,7 @@
 
 /* Estilo das colunas da grid DAS AMOSTRAS */
 .linha-amostra-grid .elemento-linha-grid{
-    background-color: rgb(201, 224, 233);
+    background-color: var(--cor-coluna-amostra);
     font-weight: normal !important;
     text-transform: none;
 }

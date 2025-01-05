@@ -67,7 +67,7 @@ class WGrid{
     * Obtem as configurações da coluna 
     */
     getStatusColuna( nomeColuna ){
-        return this.statusColunas[ nomeColuna ] || null;
+        return (this.statusColunas || {})[ nomeColuna ] || null;
     }
 
     /**

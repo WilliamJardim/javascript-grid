@@ -9,6 +9,8 @@ class WGrid{
         this.nomesColunas  = this.gridConfig.colunas;
         this.statusColunas = this.gridConfig.status;
         this.callbacks     = this.gridConfig.callbacks || {};
+        this.copyOnClick   = this.gridConfig.copyOnClick || false;
+        this.selectOnClick = this.gridConfig.selectOnClick || false;
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -323,6 +325,33 @@ class WGrid{
                     //Se a coluna tiver um evento em statusColunas
                     if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
                         contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), evento.target, contexto );
+                    }
+
+                    /**
+                    * Outros eventos
+                    */
+
+                    //Se pode selecionar o texto
+                    if( contexto.selectOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowCopy != false ||
+                        contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true    
+                    ){
+                        const valorColunaClicando = contexto.getPosicao( idLinha, idColuna ).valor;
+
+                        navigator.clipboard.writeText( valorColunaClicando )
+                                           .then(() => alert("Copiado!"))
+                                           .catch(err => console.error("Falha ao copiar texto: ", err));
+                    }
+
+                    //Se pode copiar o texto
+                    if( contexto.copyOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowSelect != false ||
+                        contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true    
+                    ){
+                        // Cria uma seleção de texto
+                        const range = document.createRange();
+                        range.selectNodeContents(evento.target);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges(); // Limpa seleções anteriores
+                        selection.addRange(range);
                     }
                 };
 

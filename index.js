@@ -9,10 +9,14 @@ const minhaGrid = new WGrid({
     */
     status: {
         'Name': {
-            visible: true
+            visible: true,
+            select: false,
+            copy: false
         },
         'Age': {
-            visible: true
+            visible: true,
+            select: false,
+            copy: true
         }
     },
 

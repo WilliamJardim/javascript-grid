@@ -185,6 +185,11 @@ class WGrid{
         const nomesAtuais = this.nomesColunas;
         this.nomesColunas = nomeColunas;
 
+        //Antes de renomear as colunas
+        if( this.callbacks.beforeRenomearColunas ){
+            this.callbacks.beforeRenomearColunas.bind(this)(this, nomesAtuais, nomeColunas);
+        }
+
         if( this.statusColunas != undefined ){
             this.nomesColunas.forEach((novoNome, indice)=>{
                 const colunaAntiga = nomesAtuais[ indice ];
@@ -192,6 +197,11 @@ class WGrid{
                 this.statusColunas[novoNome] = {...this.statusColunas[colunaAntiga]};
                 delete this.statusColunas[colunaAntiga]
             })
+        }
+
+        //Depois de renomear as colunas
+        if( this.callbacks.afterRenomearColunas ){
+            this.callbacks.afterRenomearColunas.bind(this)(this, nomesAtuais, nomeColunas);
         }
 
         this.render();

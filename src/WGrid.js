@@ -203,11 +203,21 @@ class WGrid{
     * @param {String} novoNome 
     */
     renomearColuna( colunaAntiga, novoNome ){
+        //Antes de renomear a coluna
+        if( this.callbacks.beforeRenomearColuna ){
+            this.callbacks.beforeRenomearColuna.bind(this)( this, colunaAntiga, novoNome );
+        }
+
         this.nomesColunas = this.nomesColunas.map(( nomeColunaAtual )=>{ return nomeColunaAtual == colunaAntiga ? novoNome : nomeColunaAtual });
 
         if( this.statusColunas != undefined ){
             this.statusColunas[novoNome] = {...this.statusColunas[colunaAntiga]};
             delete this.statusColunas[colunaAntiga]
+        }
+
+        //Depois que renomear a coluna
+        if( this.callbacks.afterRenomearColuna ){
+            this.callbacks.afterRenomearColuna.bind(this)( this, colunaAntiga, novoNome );
         }
 
         this.render();

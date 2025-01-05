@@ -1,9 +1,10 @@
 /* Cores */
 :root{
-    --cor-fundo-grid: rgb(255, 188, 188);
-    --cor-fundo-titulo: rgb(160, 85, 109);
-    --cor-coluna-cabecalho: rgb(211, 137, 137);
-    --cor-coluna-amostra: rgb(228, 193, 193);
+    --cor-fundo-grid: rgb(236, 226, 226);
+    --cor-fundo-titulo: rgb(148, 41, 77);
+    --cor-coluna-cabecalho: rgb(209, 105, 105);
+    --cor-coluna-amostra: rgb(218, 166, 166);
+    --cor-fundo-selecionando: rgb(223, 75, 75);
 }
 
 /* Estilo da grid */
@@ -68,4 +69,10 @@
     background-color: var(--cor-coluna-amostra);
     font-weight: normal !important;
     text-transform: none;
+}
+
+.elemento-linha-grid:hover{
+    background-color: var(--cor-fundo-selecionando);
+    transition: 0.3s;
+    transform: scale(1.04);
 }

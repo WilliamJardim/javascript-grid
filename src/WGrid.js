@@ -289,6 +289,9 @@ class WGrid{
         //Adiciona um titulo
         this.CriarLinha([this.tituloGrid], 'linha-detalhes');
 
+        //Adiciona um toolbar para botões
+        this.CriarLinha([], 'linha-toolbar');
+
         /**
         * Cria o cabeçalho 
         */
@@ -450,5 +453,26 @@ class WGrid{
         if( this.callbacks.afterRender ){
             this.callbacks.afterRender.bind(this)( this );
         }
+
+        //Cria alguns botões
+        document.getElementsByClassName('linha-toolbar')[0].innerHTML += `
+            <button name='botao-adicionar-amostra' class='elemento-linha-grid'> + </button>
+            <button class='elemento-linha-grid ocupacao-invisivel'>  </button>
+        `;
+
+        //Cria os eventos dos botões
+        (document)
+        .getElementById(contexto.idElementoPai)
+        .querySelectorAll('button')
+        .forEach(function( objBotao, indiceBotao ){
+
+            if( objBotao.name == 'botao-adicionar-amostra' ){
+                objBotao.contexto = contexto;
+                objBotao.onclick = function(evento){
+                    contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+                }
+            }
+
+        });
     }
 }

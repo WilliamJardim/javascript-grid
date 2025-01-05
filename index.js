@@ -24,7 +24,7 @@ const minhaGrid = new WGrid({
         'Age': {
             visible: true,
             select: false,
-            copy: true,
+            copy: false,
             editable: true
         }
     },

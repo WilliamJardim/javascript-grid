@@ -88,3 +88,8 @@
     font-size: 16pt;
     text-align: center;
 }
+
+.ocupacao-invisivel{
+    display: block;
+    visibility: hidden;
+}

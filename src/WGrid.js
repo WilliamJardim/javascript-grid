@@ -22,7 +22,7 @@ class WGrid{
     /**
     * Cria uma linha 
     */
-    CriarLinha( dados, classeLinha='linha-grid' ) {
+    CriarLinha( dados, classeLinha='linha-grid', idLinha='' ) {
         const elementoPai = this.elementoPai;
     
         let htmlColunas = ``;
@@ -39,7 +39,7 @@ class WGrid{
             if( classeLinha == 'linha-detalhes' || (!this.getStatusColuna( nomeColunaAtual ) || this.getStatusColuna( nomeColunaAtual ).visible == true) )
             {
                 htmlColunas += `
-                    <div class='elemento-linha-grid'>
+                    <div class='elemento-linha-grid' name='coluna-${i}-linha${idLinha}-grid-${this.idElementoPai}'>
                         ${ valorColunaAtual }
                     </div>
                 `;
@@ -50,10 +50,44 @@ class WGrid{
         * Cria a linha
         */
         elementoPai.innerHTML += `
-            <div class='${classeLinha} linha-grid '>
+            <div class='${classeLinha} linha-grid' name='linha-${idLinha}-grid-${this.idElementoPai}'>
                 ${ htmlColunas }
             </div>
         `;
+    }
+
+    /**
+    * Obtém o elemento HTML de uma linha 
+    */
+    getElementoLinha( numeroLinha ){
+        return document.getElementsByName(`linha-${numeroLinha}-grid-${this.idElementoPai}`)[0];
+    }
+
+    /**
+    * Obtém o elemento HTML de uma coluna de uma linha
+    */
+    getElementoColuna( numeroLinha, numeroColuna ){
+        return document.getElementsByName(`coluna-${numeroColuna}-linha${numeroLinha}-grid-${this.idElementoPai}`)[0];
+    }
+
+    /**
+    * Obtém o valor e o elemento HTML de uma coluna de uma linha
+    */
+    getPosicao( numeroLinha, numeroColuna ){
+        if(!this.dados[numeroLinha]){
+            throw Error(`A linha ${numeroLinha} não existe!`);
+        }
+        if(!this.dados[numeroLinha][numeroColuna]){
+            throw Error(`A coluna ${numeroColuna} não existe!`);
+        }
+
+        return {
+            valor: this.dados[numeroLinha][numeroColuna],
+            linha: numeroLinha,
+            coluna: numeroColuna,
+            grid: this,
+            elemento: this.getElementoColuna( numeroLinha, numeroColuna )
+        };
     }
 
     /**
@@ -188,7 +222,7 @@ class WGrid{
         * Cria o cabeçalho 
         */
         const dadosCabecalho = this.nomesColunas || this.dados.at(0);
-        this.CriarLinha(dadosCabecalho);
+        this.CriarLinha(dadosCabecalho, '', '_inicio');
 
         /**
         * Cria as outras linhas 
@@ -203,7 +237,7 @@ class WGrid{
             const indice  = i;
             const amostra = amostras[indice];
         
-            this.CriarLinha(amostra, 'linha-amostra-grid');
+            this.CriarLinha(amostra, 'linha-amostra-grid', indice);
         }
     }
 }

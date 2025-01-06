@@ -11,7 +11,6 @@ A simple Grid built in JavaScript from scratch
   <img src="./imagens/grid3-en.png" alt="Exemplo 3" width="45%">
 </p>
 
-# Others images
 <p align="center">
   <img src="./imagens/grid4-en.png" alt="Exemplo 4" width="45%">
   <img src="./imagens/grid5-en.png" alt="Exemplo 5" width="45%">

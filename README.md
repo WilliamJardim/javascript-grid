@@ -1,12 +1,18 @@
 A simple Grid built in JavaScript from scratch
 
 # Image Examples
-![Exemplo 1](./imagens/grid1-en.png)
+<p align="center">
+  <img src="./imagens/grid1-en.png" alt="Exemplo 1" width="45%">
+</p>
 
 # Multi-color and Search Bar
-![Exemplo 2](./imagens/grid2-en.png) 
-![Exemplo 3](./imagens/grid3-en.png)
+<p align="center">
+  <img src="./imagens/grid2-en.png" alt="Exemplo 2" width="45%">
+  <img src="./imagens/grid3-en.png" alt="Exemplo 3" width="45%">
+</p>
 
 # Others images
-![Exemplo 4](./imagens/grid4-en.png) 
-![Exemplo 5](./imagens/grid5-en.png)
+<p align="center">
+  <img src="./imagens/grid4-en.png" alt="Exemplo 4" width="45%">
+  <img src="./imagens/grid5-en.png" alt="Exemplo 5" width="45%">
+</p>

@@ -393,7 +393,7 @@ class WGrid{
                         * Outros eventos
                         */
 
-                        //Se pode selecionar o texto
+                        //Se pode copiar o texto
                         if( contexto.selectOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowCopy != false ||
                             contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true    
                         ){
@@ -404,16 +404,25 @@ class WGrid{
                                             .catch(err => console.error("Falha ao copiar texto: ", err));
                         }
 
-                        //Se pode copiar o texto
+                        //Se pode selecionar o texto
                         if( contexto.copyOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowSelect != false ||
                             contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true    
                         ){
-                            // Cria uma seleção de texto
-                            const range = document.createRange();
-                            range.selectNodeContents(evento.target);
-                            const selection = window.getSelection();
-                            selection.removeAllRanges(); // Limpa seleções anteriores
-                            selection.addRange(range);
+                            if( contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).editable != undefined &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).editable != false &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).editable != null
+                            ){
+                                 evento.target.setSelectionRange(0, evento.target.value.length);             
+                                 evento.target.focus();
+
+                            }else{
+                                // Cria uma seleção de texto
+                                const range = document.createRange();
+                                range.selectNodeContents(evento.target);
+                                const selection = window.getSelection();
+                                selection.removeAllRanges(); // Limpa seleções anteriores
+                                selection.addRange(range);
+                            }
                         }
                     };
 

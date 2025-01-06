@@ -10,20 +10,14 @@ const minhaGrid = new WGrid({
     status: {
         'Name': {
             visible: true,
-            select: false,
+            select: true,
             copy: false,
-
-            /** Permite editar uma coluna */
-            editable: {
-                onChange: function(idInput, valorAtual, novoValor, numLinha, numColuna, nomeColuna, statusColuna, contexto){
-                   
-                }
-            }
+            editable: true
             
         },
         'Age': {
             visible: true,
-            select: false,
+            select: true,
             copy: false,
             editable: true
         }

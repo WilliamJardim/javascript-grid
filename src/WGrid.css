@@ -51,7 +51,7 @@
 /* Estilo das colunas da grid DO CABECALHO */
 .elemento-linha-grid{
     width: 200px;
-    height: 70px;
+    height: 60px;
     justify-self: center;
     align-content: center;
     background-color: var(--cor-coluna-cabecalho);
@@ -100,6 +100,7 @@
     background-color: var(--cor-fundo-botao);
     color: white;
     font-style: italic;
+    font-size: 20px;
 }
 
 .wgrid .input-pesquisa-grid{

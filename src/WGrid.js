@@ -11,6 +11,7 @@ class WGrid{
         this.callbacks     = this.gridConfig.callbacks || {};
         this.copyOnClick   = this.gridConfig.copyOnClick || false;
         this.selectOnClick = this.gridConfig.selectOnClick || false;
+        this.pesquisando   = '';
 
         //Adiciona uma classe para aplicar estilo padrão
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
@@ -274,6 +275,18 @@ class WGrid{
         this.dados[ numAmostra ][ (typeof numColuna == 'number' ? numColuna : typeof numColuna == 'string' ? this.getIndiceCampo(numColuna) : null) ] = novoValor;
     }
 
+    /**
+    * Verifica se o critério de busca foi atingido para uma amostra
+    * @param {String} strBusca 
+    * @param {Array} dadosAmostra 
+    */
+    _criteriosBusca(strBusca, dadosAmostra){
+        return dadosAmostra.map(function(caracteristica){
+            return String(caracteristica).toLowerCase().indexOf( String(strBusca).toLowerCase() ) != -1 ? true : false
+
+        }).some((resultadoCondicao)=>{ return resultadoCondicao == true }) == true;
+    }
+
     /** Desenha a grid no elemento pai */
     render() {
         //Roda o callback beforeRender
@@ -288,6 +301,9 @@ class WGrid{
 
         //Adiciona um titulo
         this.CriarLinha([this.tituloGrid], 'linha-detalhes');
+
+        //Adiciona um toolbar para pesquisa
+        this.CriarLinha([], 'linha-pesquisa');
 
         //Adiciona um toolbar para botões
         this.CriarLinha([], 'linha-toolbar');
@@ -312,7 +328,16 @@ class WGrid{
             const indice  = i;
             const amostra = amostras[indice];
         
-            this.CriarLinha(amostra, 'linha-amostra-grid', indice);
+            //Exibe a amostra SE
+            if( 
+                //Se não estamos filtrando nada
+                !contexto.pesquisando ||
+
+                //Se o usuario estiver pesquisando E o critério for atendido
+                (contexto.pesquisando != null && contexto._criteriosBusca(contexto.pesquisando, amostra) == true) 
+            ){
+                this.CriarLinha(amostra, 'linha-amostra-grid', indice);
+            }
         }
 
         /**
@@ -324,129 +349,138 @@ class WGrid{
             * Adicionar eventos na linha 
             */
             const idLinha = i;
-            document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
-                if( contexto.callbacks[ 'onClickLinha' ] ){
-                    contexto.callbacks[ 'onClickLinha' ].bind( contexto )( idLinha, evento.target, contexto )
+            if(document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0])
+            {
+                document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
+                    if( contexto.callbacks[ 'onClickLinha' ] ){
+                        contexto.callbacks[ 'onClickLinha' ].bind( contexto )( idLinha, evento.target, contexto )
+                    }
                 }
+            
+                document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
+                    if( contexto.callbacks[ 'onLeftClickLinha' ] ){
+                        if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                    }
+
+                    if( contexto.callbacks[ 'onMiddleClickLinha' ] ){
+                        if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                    }
+
+                    if( contexto.callbacks[ 'onRightClickLinha' ] ){
+                        if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
+                    }
+                });
             }
-
-            document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
-                if( contexto.callbacks[ 'onLeftClickLinha' ] ){
-                    if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
-                }
-
-                if( contexto.callbacks[ 'onMiddleClickLinha' ] ){
-                    if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
-                }
-
-                if( contexto.callbacks[ 'onRightClickLinha' ] ){
-                    if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickLinha' ].bind( contexto )( idLinha, evento.target, contexto ) };
-                }
-            });
 
 
             for(let e = 0 ; e < this.dados[0].length ; e++)
             {
                 const idColuna = e;
 
-                document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
-                    if( contexto.callbacks[ 'onClickColuna' ] ){
-                        contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
-                    }
+                if(document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0])
+                {
+                    document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].onclick = function(evento){
+                        if( contexto.callbacks[ 'onClickColuna' ] ){
+                            contexto.callbacks[ 'onClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
+                        }
 
-                    //Se a coluna tiver um evento em statusColunas
-                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
-                        contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
-                    }
+                        //Se a coluna tiver um evento em statusColunas
+                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
+                            contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
+                        }
 
-                    /**
-                    * Outros eventos
-                    */
+                        /**
+                        * Outros eventos
+                        */
 
-                    //Se pode selecionar o texto
-                    if( contexto.selectOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowCopy != false ||
-                        contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true    
-                    ){
-                        const valorColunaClicando = contexto.getPosicao( idLinha, idColuna ).valor;
+                        //Se pode selecionar o texto
+                        if( contexto.selectOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowCopy != false ||
+                            contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true    
+                        ){
+                            const valorColunaClicando = contexto.getPosicao( idLinha, idColuna ).valor;
 
-                        navigator.clipboard.writeText( valorColunaClicando )
-                                           .then(() => alert("Copiado!"))
-                                           .catch(err => console.error("Falha ao copiar texto: ", err));
-                    }
+                            navigator.clipboard.writeText( valorColunaClicando )
+                                            .then(() => alert("Copiado!"))
+                                            .catch(err => console.error("Falha ao copiar texto: ", err));
+                        }
 
-                    //Se pode copiar o texto
-                    if( contexto.copyOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowSelect != false ||
-                        contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true    
-                    ){
-                        // Cria uma seleção de texto
-                        const range = document.createRange();
-                        range.selectNodeContents(evento.target);
-                        const selection = window.getSelection();
-                        selection.removeAllRanges(); // Limpa seleções anteriores
-                        selection.addRange(range);
-                    }
-                };
+                        //Se pode copiar o texto
+                        if( contexto.copyOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowSelect != false ||
+                            contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true    
+                        ){
+                            // Cria uma seleção de texto
+                            const range = document.createRange();
+                            range.selectNodeContents(evento.target);
+                            const selection = window.getSelection();
+                            selection.removeAllRanges(); // Limpa seleções anteriores
+                            selection.addRange(range);
+                        }
+                    };
 
-                document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
-                    if( contexto.callbacks[ 'onLeftClickColuna' ] ){
-                        if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
+                    document.getElementsByName(`coluna-${idColuna}-linha${i}-grid-${contexto.idElementoPai}`)[0].addEventListener('mousedown', function(evento){
+                        if( contexto.callbacks[ 'onLeftClickColuna' ] ){
+                            if( evento.button == 0 ){ contexto.callbacks[ 'onLeftClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
 
-                    if( contexto.callbacks[ 'onMiddleClickColuna' ] ){
-                        if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
+                        if( contexto.callbacks[ 'onMiddleClickColuna' ] ){
+                            if( evento.button == 1 ){ contexto.callbacks[ 'onMiddleClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
 
-                    if( contexto.callbacks[ 'onRightClickColuna' ] ){
-                        if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
-                    
-                    //Se a coluna tiver um evento em statusColunas
-                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
-                        if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
-                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
-                        if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
-                    if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
-                        if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                    }
-                })
+                        if( contexto.callbacks[ 'onRightClickColuna' ] ){
+                            if( evento.button == 2 ){ contexto.callbacks[ 'onRightClickColuna' ].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
+                        
+                        //Se a coluna tiver um evento em statusColunas
+                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
+                            if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
+                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
+                            if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
+                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
+                            if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        }
+                    })
+                }
             }
 
             /**
             * Cria os eventos de edição das colunas da linha 
             */
-            (document)
-            .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
-            .querySelectorAll('input')
-            .forEach(function( objInput, indiceObjInput ){
-                const idInput      = objInput.id;
-                const numLinha     = Number( objInput.getAttribute('_linha') );
-                const numColuna    = Number( objInput.getAttribute('_coluna') );
-                const nomeColuna   = contexto.getNomeColuna( numColuna );
-                const statusColuna = contexto.getStatusColuna( nomeColuna );
-                const valorAtual   = objInput.value;
+            if(document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0])
+            {
+                (document)
+                .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+                .querySelectorAll('input')
+                .forEach(function( objInput, indiceObjInput ){
+                    const idInput      = objInput.id;
+                    const numLinha     = Number( objInput.getAttribute('_linha') );
+                    const numColuna    = Number( objInput.getAttribute('_coluna') );
+                    const nomeColuna   = contexto.getNomeColuna( numColuna );
+                    const statusColuna = contexto.getStatusColuna( nomeColuna );
+                    const valorAtual   = objInput.value;
 
-                if( statusColuna.editable != undefined )
-                {
-                    objInput.onchange = function(evento){
+                    if( statusColuna.editable != undefined )
+                    {
+                        objInput.onchange = function(evento){
 
-                        const valorEditado = evento.target.value;
+                            const valorEditado = evento.target.value;
 
-                        //Edita o objeto dados interno
-                        contexto.setColunaAmostra( numLinha, numColuna, valorEditado );
+                            //Edita o objeto dados interno
+                            contexto.setColunaAmostra( numLinha, numColuna, valorEditado );
 
-                        //Se o editable for um JSON, e dentro dele tiver o callback onChange, ele aplica ele com esses parametros
-                        if( typeof statusColuna.editable == 'object' &&
-                            statusColuna.editable.onChange
-                        ){
-                            statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, valorEditado, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
+                            //Se o editable for um JSON, e dentro dele tiver o callback onChange, ele aplica ele com esses parametros
+                            if( typeof statusColuna.editable == 'object' &&
+                                statusColuna.editable.onChange
+                            ){
+                                statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, valorEditado, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
+                            }
                         }
+                    
                     }
-                
-                }
 
-            });
+                });
+            }
         }
 
         //Roda o callback afterRender
@@ -456,8 +490,14 @@ class WGrid{
 
         //Cria alguns botões
         document.getElementsByClassName('linha-toolbar')[0].innerHTML += `
-            <button name='botao-adicionar-amostra' class='elemento-linha-grid'> + </button>
-            <button class='elemento-linha-grid ocupacao-invisivel'>  </button>
+            <button name='botao-adicionar-amostra' class='elemento-linha-grid'> 🖉 New </button>
+            <button name='botao-recarregar-grid' class='elemento-linha-grid'>🔌Reflesh </button>
+        `;
+
+        document.getElementsByClassName('linha-pesquisa')[0].innerHTML = `
+            <input class='input-pesquisa-grid'
+                   placeholder='🔍 Search...' 
+            />
         `;
 
         //Cria os eventos dos botões
@@ -473,6 +513,36 @@ class WGrid{
                 }
             }
 
+            if( objBotao.name == 'botao-recarregar-grid' ){
+                objBotao.contexto = contexto;
+                objBotao.onclick = function(evento){
+                    contexto.render();
+                }
+            }
+
         });
+
+        //Cria o evento de pesquisa
+        (document)
+        .getElementById(contexto.idElementoPai)
+        .querySelector('.input-pesquisa-grid')
+        .value = contexto.pesquisando;
+
+        (document)
+        .getElementById(contexto.idElementoPai)
+        .querySelector('.input-pesquisa-grid')
+        .onchange = function(evento){
+            const valorPesquisa = evento.target ? String(evento.target.value).toLowerCase() : null;
+
+            //Identifica SE e o QUE o usuario está pesquisando na grid
+            if( valorPesquisa != '' ){
+                contexto.pesquisando = valorPesquisa;
+            }else{
+                contexto.pesquisando = null;
+            }
+
+            contexto.render();
+        }
+
     }
 }

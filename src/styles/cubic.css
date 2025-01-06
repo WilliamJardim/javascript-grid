@@ -1,0 +1,72 @@
+.linha-grid{
+    background-color: var(--cor-coluna-cabecalho) !important;
+    border: solid 0.8px black !important;
+    border-radius: 0px;
+    gap: 0px;
+}
+
+/* Estilo das colunas da grid DO CABECALHO */
+.elemento-linha-grid{
+    border: none !important;
+    background-color: unset !important;
+}
+
+.linha-amostra-grid{
+    background-color: var(--cor-coluna-amostra) !important;
+    border: solid 0.8px black !important;
+    border-radius: 0px;
+    gap: 0px;
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
+}
+
+/* Estilo das colunas da grid DAS AMOSTRAS */
+.linha-amostra-grid .elemento-linha-grid{
+    background-color: var(--cor-coluna-amostra);
+    font-weight: normal !important;
+    text-transform: none;
+}
+
+.linha-grid .elemento-linha-grid{
+    border: solid 1px black !important;
+    border-radius: 0px;
+}
+
+.linha-amostra-grid .elemento-linha-grid{
+    border: solid 0.8px black !important;
+    border-radius: 0px;
+}
+
+.wgrid .linha-detalhes{
+    background-color: var(--cor-fundo-titulo) !important;
+}
+
+.wgrid .linha-pesquisa{
+    background-color: unset !important;
+    border: none !important;
+    height: 90px;
+}
+
+.wgrid .input-pesquisa-grid{
+    height: 40px !important;
+}
+
+.wgrid .linha-toolbar{
+    background-color: unset !important;
+    border: none !important;
+    border-radius: 10px !important;
+    gap: 8px;
+}
+
+.wgrid button{
+    border: solid 1px black !important;
+    background-color: var(--cor-fundo-botao) !important;
+    border-radius: 16px !important;
+}
+
+.wgrid .linha-detalhes .elemento-linha-grid{
+    height: auto !important;
+    border: none !important;
+    font-size: 22px;
+    padding: 5px;
+}

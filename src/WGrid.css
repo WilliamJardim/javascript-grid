@@ -101,6 +101,7 @@
     color: white;
     font-style: italic;
     font-size: 20px;
+    cursor:crosshair !important;
 }
 
 .wgrid .input-pesquisa-grid{
@@ -110,4 +111,10 @@
     border-radius: 18px;
     font-size: 22pt;
     padding: 8px;
+}
+
+.wgrid .input-pesquisa-grid:hover{
+    border: solid 3px black;
+    border-radius: 18px;
+    transition: 0.5s;
 }

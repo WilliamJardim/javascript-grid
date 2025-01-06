@@ -30,8 +30,22 @@ const minhaGrid = new WGrid({
         ['William', 21],
         ['Rafael',  25]
     ],
-    
+
     titulo: 'Friends',
+
+    /**
+    * Controla a barra de pesquisa
+    */
+    searchBar: true,
+
+    /**
+    * Controla quais botões vão existir 
+    */
+    buttons: {
+        new: true,
+        reflesh: true
+    },
+
     elementoPai: 'div-grid',
 
     /**

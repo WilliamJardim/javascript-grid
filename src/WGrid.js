@@ -11,6 +11,16 @@ class WGrid{
         this.callbacks     = this.gridConfig.callbacks || {};
         this.copyOnClick   = this.gridConfig.copyOnClick || false;
         this.selectOnClick = this.gridConfig.selectOnClick || false;
+        this.searchBar     = this.gridConfig.searchBar;
+        if( this.searchBar == undefined ){
+            this.searchBar = true;
+        }
+
+        this.buttons       = this.gridConfig.buttons;
+        if( this.buttons == undefined ){
+            this.buttons = true;
+        }
+
         this.pesquisando   = '';
 
         //Adiciona uma classe para aplicar estilo padrão
@@ -299,14 +309,21 @@ class WGrid{
         */
         this.elementoPai.innerHTML = ``;
 
-        //Adiciona um titulo
-        this.CriarLinha([this.tituloGrid], 'linha-detalhes');
+        if( this.tituloGrid != undefined )
+        {
+            //Adiciona um titulo
+            this.CriarLinha([this.tituloGrid], 'linha-detalhes');
+        }
 
-        //Adiciona um toolbar para pesquisa
-        this.CriarLinha([], 'linha-pesquisa');
+        if( this.searchBar ){
+            //Adiciona um toolbar para pesquisa
+            this.CriarLinha([], 'linha-pesquisa');
+        }
 
-        //Adiciona um toolbar para botões
-        this.CriarLinha([], 'linha-toolbar');
+        if( this.buttons == true || typeof this.buttons == 'object' ){
+            //Adiciona um toolbar para botões
+            this.CriarLinha([], 'linha-toolbar');
+        }
 
         /**
         * Cria o cabeçalho 
@@ -498,59 +515,102 @@ class WGrid{
         }
 
         //Cria alguns botões
-        document.getElementsByClassName('linha-toolbar')[0].innerHTML += `
-            <button name='botao-adicionar-amostra' class='elemento-linha-grid'> 🖉 New </button>
-            <button name='botao-recarregar-grid' class='elemento-linha-grid'>🔌Reflesh </button>
-        `;
+        if( this.buttons == true || typeof this.buttons == 'object' )
+        {
+            document.getElementsByClassName('linha-toolbar')[0].innerHTML += `
+                ${ 
+                   (
+                        //Se eu controlo se vai ter botao de adicionar amostra ou não
+                        (
+                            typeof this.buttons == 'object' && 
+                            this.buttons.new == true
+                        )
+                        //OU SE EU NÂO ESPECIFICAR NADA, VAI TER POR PADRAO
+                        ||
+                        (
+                            typeof this.buttons == 'boolean'
+                        )
+                   ) == true
+                            ? "<button name='botao-adicionar-amostra' class='elemento-linha-grid'> 🖉 New </button>" 
+                            : ""               
+                }
 
-        document.getElementsByClassName('linha-pesquisa')[0].innerHTML = `
-            <input class='input-pesquisa-grid'
-                   placeholder='🔍 Search...' 
-            />
-        `;
+                ${
+                    (
+                        //Se eu controlo se vai ter botao de adicionar amostra ou não
+                        (
+                            typeof this.buttons == 'object' && 
+                            this.buttons.reflesh == true
+                        )
+                        //OU SE EU NÂO ESPECIFICAR NADA, VAI TER POR PADRAO
+                        ||
+                        (
+                            typeof this.buttons == 'boolean'
+                        )
+                   ) == true 
+                            ? "<button name='botao-recarregar-grid' class='elemento-linha-grid'>🔌Reflesh </button>"
+                            : ""
+                }
+            `;
+        }
+
+        if( this.searchBar == true || typeof this.searchBar == 'object' )
+        {
+            document.getElementsByClassName('linha-pesquisa')[0].innerHTML = `
+                <input class='input-pesquisa-grid'
+                    placeholder='🔍 Search...' 
+                />
+            `;
+        }
 
         //Cria os eventos dos botões
-        (document)
-        .getElementById(contexto.idElementoPai)
-        .querySelectorAll('button')
-        .forEach(function( objBotao, indiceBotao ){
+        if( this.buttons == true || typeof this.buttons == 'object' )
+        {
+            (document)
+            .getElementById(contexto.idElementoPai)
+            .querySelectorAll('button')
+            .forEach(function( objBotao, indiceBotao ){
 
-            if( objBotao.name == 'botao-adicionar-amostra' ){
-                objBotao.contexto = contexto;
-                objBotao.onclick = function(evento){
-                    contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+                if( objBotao.name == 'botao-adicionar-amostra' ){
+                    objBotao.contexto = contexto;
+                    objBotao.onclick = function(evento){
+                        contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+                    }
                 }
-            }
 
-            if( objBotao.name == 'botao-recarregar-grid' ){
-                objBotao.contexto = contexto;
-                objBotao.onclick = function(evento){
-                    contexto.render();
+                if( objBotao.name == 'botao-recarregar-grid' ){
+                    objBotao.contexto = contexto;
+                    objBotao.onclick = function(evento){
+                        contexto.render();
+                    }
                 }
+
+            });
+        }
+
+        if( this.searchBar == true || typeof this.searchBar == 'object' )
+        {
+            //Cria o evento de pesquisa
+            (document)
+            .getElementById(contexto.idElementoPai)
+            .querySelector('.input-pesquisa-grid')
+            .value = contexto.pesquisando;
+
+            (document)
+            .getElementById(contexto.idElementoPai)
+            .querySelector('.input-pesquisa-grid')
+            .onchange = function(evento){
+                const valorPesquisa = evento.target ? String(evento.target.value).toLowerCase() : null;
+
+                //Identifica SE e o QUE o usuario está pesquisando na grid
+                if( valorPesquisa != '' ){
+                    contexto.pesquisando = valorPesquisa;
+                }else{
+                    contexto.pesquisando = null;
+                }
+
+                contexto.render();
             }
-
-        });
-
-        //Cria o evento de pesquisa
-        (document)
-        .getElementById(contexto.idElementoPai)
-        .querySelector('.input-pesquisa-grid')
-        .value = contexto.pesquisando;
-
-        (document)
-        .getElementById(contexto.idElementoPai)
-        .querySelector('.input-pesquisa-grid')
-        .onchange = function(evento){
-            const valorPesquisa = evento.target ? String(evento.target.value).toLowerCase() : null;
-
-            //Identifica SE e o QUE o usuario está pesquisando na grid
-            if( valorPesquisa != '' ){
-                contexto.pesquisando = valorPesquisa;
-            }else{
-                contexto.pesquisando = null;
-            }
-
-            contexto.render();
         }
 
     }

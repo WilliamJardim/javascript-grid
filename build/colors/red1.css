@@ -1,0 +1,9 @@
+/* Cores */
+:root{
+    --cor-fundo-grid: rgb(236, 226, 226);
+    --cor-fundo-titulo: rgb(148, 41, 77);
+    --cor-coluna-cabecalho: rgb(209, 105, 105);
+    --cor-coluna-amostra: rgb(218, 166, 166);
+    --cor-fundo-selecionando: rgb(223, 75, 75);
+    --cor-fundo-botao: rgb(148, 83, 75);
+}

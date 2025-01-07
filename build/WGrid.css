@@ -1,0 +1,110 @@
+/* Estilo da grid */
+.wgrid{
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    height: 400px;
+    border: solid 2px black;
+    border-radius: 16px;
+    padding: 12px;
+    background-color: var(--cor-fundo-grid);
+    overflow-y: scroll;
+}
+
+/*Adicionado um título*/
+.linha-detalhes{
+    width: 100% !important;
+}
+.linha-detalhes .elemento-linha-grid{
+    width: 100% !important;
+    margin-top: -5px !important;
+    margin-bottom: 0px;
+    background-color: var(--cor-fundo-titulo);
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 22pt;
+}
+
+.linha-grid{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-self: center;
+    justify-content: center; /*Centralizar todas as linhas*/
+    gap: 12px;
+    text-align: center;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+/* Estilo das colunas da grid DO CABECALHO */
+.elemento-linha-grid{
+    width: 200px;
+    height: 60px;
+    justify-self: center;
+    align-content: center;
+    background-color: var(--cor-coluna-cabecalho);
+    border: solid 0.8px black;
+    border-radius: 16px;
+    font-size: 20pt;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.linha-amostra-grid{
+    
+}
+
+/* Estilo das colunas da grid DAS AMOSTRAS */
+.linha-amostra-grid .elemento-linha-grid{
+    background-color: var(--cor-coluna-amostra);
+    font-weight: normal !important;
+    text-transform: none;
+}
+
+.elemento-linha-grid:hover{
+    background-color: var(--cor-fundo-selecionando);
+    transition: 0.3s;
+    transform: scale(1.04);
+    cursor: text;
+}
+
+.input-coluna-editavel{
+    width: 100%;
+    height: 100%;
+    background-color:unset;
+    border: none;
+    font-size: 16pt;
+    text-align: center;
+}
+
+.ocupacao-invisivel{
+    display: block;
+    visibility: hidden;
+}
+
+.wgrid button{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: var(--cor-fundo-botao);
+    color: white;
+    font-style: italic;
+    font-size: 20px;
+    cursor:crosshair !important;
+}
+
+.wgrid .input-pesquisa-grid{
+    width: 100%;
+    height: 20pt;
+    border: solid 1px black;
+    border-radius: 18px;
+    font-size: 22pt;
+    padding: 8px;
+}
+
+.wgrid .input-pesquisa-grid:hover{
+    border: solid 3px black;
+    border-radius: 18px;
+    transition: 0.5s;
+}

@@ -1,4 +1,4 @@
-const minhaGrid = new WGrid([
+const minhaGrid = new WGrid.WGrid([
     ['William', 21],
     ['Rafael',  25]
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Grid</title>
+    <link rel="stylesheet" href="WGrid.css">
+    <link rel="stylesheet" href="colors/blue1.css">
+    <link rel="stylesheet" href="styles/cubic.css">
+</head>
+<body>
+    
+    <div id="div-grid">
+        
+    </div>
+
+</body>
+
+<script src="../build/WGrid.js"></script>
+
+<script>
+    
+    const minhaGrid = new WGrid.WGrid([
+        ['William', 21],
+        ['Rafael',  25]
+
+    //Configurações da Grid
+    ], {
+        elementoPai: 'div-grid',
+        colunas: ['Name', 'Age']
+    });
+
+</script>
+
+</html>

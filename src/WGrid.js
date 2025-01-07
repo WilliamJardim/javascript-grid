@@ -1,4 +1,15 @@
-class WGrid{
+if( typeof window === 'undefined' ){
+    globalThis.window = {};
+}
+
+window.WGrid = {};
+
+window.WGrid.libs = {
+    Analise: window.Analise || null,
+    Vectorization: ((window.Analise || {}).libs || {}).Vectorization || null
+};
+
+window.WGrid.WGrid = class{
 
     constructor( dadosGrid=[], gridConfig={} ){
         // Verifica se a instação contém os estilo CSS
@@ -28,7 +39,7 @@ class WGrid{
 
         this.pesquisando   = '';
 
-        //Adiciona uma classe para aplicar estilo padrão
+        //Adiciona uma classe para aplicar estilo padrao
         document.getElementById( this.idElementoPai ).setAttribute('class', document.getElementById( this.idElementoPai ).getAttribute('class')||'' + ' wgrid');
 
         if(!this.elementoPai){
@@ -47,7 +58,7 @@ class WGrid{
         let htmlColunas = ``;
 
         /**
-        * Cria as DIVs de todas os valores dentro de 'dados'(isso é, os dados da linha atual)
+        * Cria as DIVs de todas os valores dentro de 'dados'(os dados da linha atual)
         */
         for( let i = 0 ; i < dados.length ; i++ )
         {
@@ -56,7 +67,7 @@ class WGrid{
             const statusColuna     = this.getStatusColuna( nomeColunaAtual );
 
             /**
-            * Se a coluna está visivel ou se, não existe nenhuma configuração para a coluna
+            * Se a coluna esta visivel ou se, nao existe nenhuma configuracao para a coluna
             */
             if( classeLinha == 'linha-detalhes' || (!statusColuna || statusColuna.visible == true) )
             {
@@ -64,7 +75,7 @@ class WGrid{
                     <div class='elemento-linha-grid' name='coluna-${i}-linha${idLinha}-grid-${this.idElementoPai}'>
                         ${ 
                             //idLinha != '_inicio' significa que ele vai ignorar o cabeçalho
-                            (statusColuna.editable != undefined && statusColuna.editable != false && classeLinha != 'linha-detalhes' && idLinha != '_inicio') 
+                            ( (statusColuna || {}).editable != undefined && (statusColuna || {}).editable != false && classeLinha != 'linha-detalhes' && idLinha != '_inicio') 
                                                           //Se for editavel
                                                           ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
                                                                     value=${valorColunaAtual}
@@ -93,21 +104,21 @@ class WGrid{
     }
 
     /**
-    * Obtém o elemento HTML de uma linha 
+    * Obtem o elemento HTML de uma linha 
     */
     getElementoLinha( numeroLinha ){
         return document.getElementsByName(`linha-${numeroLinha}-grid-${this.idElementoPai}`)[0];
     }
 
     /**
-    * Obtém o elemento HTML de uma coluna de uma linha
+    * Obtem o elemento HTML de uma coluna de uma linha
     */
     getElementoColuna( numeroLinha, numeroColuna ){
         return document.getElementsByName(`coluna-${numeroColuna}-linha${numeroLinha}-grid-${this.idElementoPai}`)[0];
     }
 
     /**
-    * Obtém o valor e o elemento HTML de uma coluna de uma linha
+    * Obtem o valor e o elemento HTML de uma coluna de uma linha
     */
     getPosicao( numeroLinha, numeroColuna ){
         if(!this.dados[numeroLinha]){
@@ -291,7 +302,7 @@ class WGrid{
     }
 
     /**
-    * Verifica se o critério de busca foi atingido para uma amostra
+    * Verifica se o criterio de busca foi atingido para uma amostra
     * @param {String} strBusca 
     * @param {Array} dadosAmostra 
     */

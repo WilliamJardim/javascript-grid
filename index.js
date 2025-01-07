@@ -1,4 +1,11 @@
-const minhaGrid = new WGrid({
+const minhaGrid = new WGrid([
+    ['William', 21],
+    ['Rafael',  25]
+
+//Configurações da Grid
+], {
+    elementoPai: 'div-grid',
+    
     /**
     * As colunas
     */
@@ -23,14 +30,6 @@ const minhaGrid = new WGrid({
         }
     },
 
-    /**
-    * As amostras 
-    */
-    dados: [
-        ['William', 21],
-        ['Rafael',  25]
-    ],
-
     titulo: 'Friends',
 
     /**
@@ -44,28 +43,5 @@ const minhaGrid = new WGrid({
     buttons: {
         new: true,
         reflesh: true
-    },
-
-    elementoPai: 'div-grid',
-
-    /**
-    * Eventos 
-    */
-    callbacks: {
-        onClickLinha: function( linha, elementoLinha, contexto ){
-            
-        },
-
-        onClickColuna: function( linha, coluna, nomeColuna, statusColuna, elementoLinha, contexto ){
-            
-        },
-
-        beforeRender: function( contexto ){
-            
-        },
-
-        afterRender: function( contexto ){
-            
-        }
     }
 });

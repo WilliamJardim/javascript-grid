@@ -1,6 +1,11 @@
 class WGrid{
 
     constructor( gridConfig ){
+        // Verifica se a instação contém os estilo CSS
+        if( ![...document.querySelectorAll('link[rel="stylesheet"]')].some( (link)=>{ return link.href.includes("WGrid.css") } ) ){
+            console.warn(`Estilos CSS principal não carregados!. Verifique os arquivos no HTML`);
+        }
+
         this.gridConfig    = gridConfig;
         this.dados         = this.gridConfig.dados;
         this.idElementoPai = this.gridConfig.elementoPai; 

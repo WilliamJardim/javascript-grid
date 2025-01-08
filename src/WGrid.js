@@ -12,6 +12,8 @@ window.WGrid.libs = {
 window.WGrid.WGrid = class{
 
     constructor( dadosGrid=[], gridConfig={} ){
+        const context = this;
+
         // Verifica se a instação contém os estilo CSS
         if( ![...document.querySelectorAll('link[rel="stylesheet"]')].some( (link)=>{ return link.href.includes("WGrid.css") } ) ){
             console.warn(`Estilos CSS principal não carregados!. Verifique os arquivos no HTML`);
@@ -37,6 +39,38 @@ window.WGrid.WGrid = class{
         this.selectOnClick   = this.gridConfig.selectOnClick || false;
         this.searchBar       = this.gridConfig.searchBar;
         this.mirrorStructure = this.gridConfig.mirror;
+
+        /**
+        * Um mapa em ordem sequencial de todas as colunas editaveis feito assim:
+        * INDICE_COLUNA : INDICE_PROXIMA_COLUNA_EDITAVEL 
+        */
+        this.editableMap = {};
+        this.nomesColunas.forEach(function( nomeColuna, indiceColuna ){
+
+            let indiceProximaColuna = context.nomesColunas.reduce(function( nomeColunaAtual, nomeProximaColuna ){
+                                            const indiceColunaAtual = context.getIndiceCampo(nomeProximaColuna);
+
+                                            if( indiceColunaAtual > indiceColuna && 
+                                                (
+                                                  context.getStatusColuna(nomeProximaColuna).editable != undefined && 
+                                                  context.getStatusColuna(nomeProximaColuna).editable != null && 
+                                                  context.getStatusColuna(nomeProximaColuna).editable != false
+                                                )
+                                            ){
+                                                return indiceColunaAtual;
+                                            }
+                                      });
+
+            if(indiceProximaColuna)
+            {
+                context.editableMap[ indiceColuna ] = {
+                    nomeColuna: nomeColuna,
+                    indiceProximaColuna: indiceProximaColuna,
+                    nomeProximaColuna: context.nomesColunas[ indiceProximaColuna ]
+                }
+            }
+
+        });
 
         if( this.searchBar == undefined ){
             this.searchBar = true;

@@ -10,9 +10,7 @@ const estrutura = Analise.DataStructure([
     flexibilidade: ['Text', 'Number'],
 });
 
-const minhaGrid = new WGrid.WGrid([], {
-    
-    mirror: estrutura, //Define que a Grid vai ser renderizada sempre com os dados do DataStructure
+const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
 
     elementoPai: 'div-grid',
     

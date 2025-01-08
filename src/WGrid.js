@@ -686,6 +686,17 @@ window.WGrid.WGrid = class{
                     objBotao.contexto = contexto;
                     objBotao.onclick = function(evento){
                         contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+
+                        //Faz um scroll na grid para a ultima amostra criada
+                        setTimeout(function(){
+                            (document)
+                            .getElementById(contexto.idElementoPai)
+                            .scrollTo({
+                                top: (document).getElementById(contexto.idElementoPai).scrollHeight,
+                                behavior: 'smooth'
+                              });
+
+                        }, 70);
                     }
                 }
 

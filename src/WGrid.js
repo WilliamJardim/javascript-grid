@@ -19,6 +19,13 @@ window.WGrid.WGrid = class{
 
         this.gridConfig    = gridConfig;
         this.dados         = dadosGrid;
+
+        //Se o dados for um DataStructure do Analise
+        if( window.WGrid.libs.Analise != null && this.dados.objectName && this.dados.objectName == 'DataStructure' ){
+            this._datastructure_origem = dadosGrid;
+            this.dados = dadosGrid.raw();
+        }
+
         this.idElementoPai = this.gridConfig.elementoPai; 
         this.elementoPai   = document.getElementById( this.idElementoPai ); 
         this.tituloGrid    = this.gridConfig.titulo;
@@ -394,12 +401,8 @@ window.WGrid.WGrid = class{
     }
 
     /** Desenha a grid no elemento pai */
-    render( novosDados=null ) {
-        //Se tiver novos dados para trocar
-        if( novosDados != null ){
-            this.dados = novosDados;
-        }
-
+    render() {
+        
         //Roda o callback beforeRender
         if( this.callbacks.beforeRender ){
             this.callbacks.beforeRender.bind(this)( this );

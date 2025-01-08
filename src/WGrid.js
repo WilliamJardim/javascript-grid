@@ -26,16 +26,18 @@ window.WGrid.WGrid = class{
             this.dados = dadosGrid.raw();
         }
 
-        this.idElementoPai = this.gridConfig.elementoPai; 
-        this.elementoPai   = document.getElementById( this.idElementoPai ); 
-        this.tituloGrid    = this.gridConfig.titulo;
-        this.nomesColunas  = this.gridConfig.colunas;
-        this.flexibilidade = this.gridConfig.flexibilidade || [];
-        this.statusColunas = this.gridConfig.status;
-        this.callbacks     = this.gridConfig.callbacks || {};
-        this.copyOnClick   = this.gridConfig.copyOnClick || false;
-        this.selectOnClick = this.gridConfig.selectOnClick || false;
-        this.searchBar     = this.gridConfig.searchBar;
+        this.idElementoPai   = this.gridConfig.elementoPai; 
+        this.elementoPai     = document.getElementById( this.idElementoPai ); 
+        this.tituloGrid      = this.gridConfig.titulo;
+        this.nomesColunas    = this.gridConfig.colunas;
+        this.flexibilidade   = this.gridConfig.flexibilidade || [];
+        this.statusColunas   = this.gridConfig.status;
+        this.callbacks       = this.gridConfig.callbacks || {};
+        this.copyOnClick     = this.gridConfig.copyOnClick || false;
+        this.selectOnClick   = this.gridConfig.selectOnClick || false;
+        this.searchBar       = this.gridConfig.searchBar;
+        this.mirrorStructure = this.gridConfig.mirror;
+
         if( this.searchBar == undefined ){
             this.searchBar = true;
         }
@@ -402,6 +404,11 @@ window.WGrid.WGrid = class{
 
     /** Desenha a grid no elemento pai */
     render() {
+
+        //Se estiver usando um 'mirrorStructure', ele vai estar sempre copiando os dados do DataStructure espelhado pra manter a grid atualizada sempre com os dados do DataStructure
+        if(  window.WGrid.libs.Analise != null && this.mirrorStructure ){
+            this.dados = this.mirrorStructure.raw();
+        }
         
         //Roda o callback beforeRender
         if( this.callbacks.beforeRender ){

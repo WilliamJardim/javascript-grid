@@ -1,9 +1,19 @@
-const minhaGrid = new WGrid.WGrid([
+const estrutura = Analise.DataStructure([
     ['William', 21],
     ['Rafael',  25]
 
-//Configurações da Grid
 ], {
+    /**
+    * As colunas
+    */
+    campos: ['Name', 'Age'],
+    flexibilidade: ['Text', 'Number'],
+});
+
+const minhaGrid = new WGrid.WGrid([], {
+    
+    mirror: estrutura, //Define que a Grid vai ser renderizada sempre com os dados do DataStructure
+
     elementoPai: 'div-grid',
     
     /**

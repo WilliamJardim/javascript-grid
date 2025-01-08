@@ -413,8 +413,21 @@ window.WGrid.WGrid = class{
     * @param {String} novoNome 
     */
     adicionarAmostra( dadosAmostra ){
+        const contexto = this;
+
         this.dados.push(dadosAmostra);
         this.render();
+
+        //Faz um scroll na grid para a ultima amostra criada
+        setTimeout(function(){
+            (document)
+            .getElementById(contexto.idElementoPai)
+            .scrollTo({
+                top: (document).getElementById(contexto.idElementoPai).scrollHeight,
+                behavior: 'smooth'
+              });
+
+        }, 70);
     }
 
     /**
@@ -647,6 +660,30 @@ window.WGrid.WGrid = class{
                                 statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, valorEditado, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
                             }
                         }
+
+                        objInput.addEventListener('keydown', function(eventoKeydown){
+                            if( eventoKeydown.key == 'Enter' ){
+                                
+                                const idColuna = eventoKeydown.target.getAttribute('_coluna');
+
+                                setTimeout(()=>{
+                                    const idProximaColunaEditavel = (contexto.editableMap[ idColuna ] || {}).indiceProximaColuna;
+
+                                    //Se existe uma proxima coluna editavel
+                                    if( idProximaColunaEditavel != undefined ){
+                                        document.getElementById(`input-coluna${ idProximaColunaEditavel }-linha${idLinha}-grid-${contexto.idElementoPai}`).click()
+                                    
+                                    //CASO NÂO EXISTA NENHUMA PROXIMA COLUNA EDITAVEL
+                                    }else{
+                                        //CRIA UMA NOVA AMOSTRA EM BRANCO
+                                        contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+                                        document.getElementById(`input-coluna${ 0 }-linha${idLinha+1}-grid-${contexto.idElementoPai}`).click()
+                                    }
+                                
+                                }, 100);
+
+                            }
+                        });
                     
                     }
 
@@ -720,17 +757,6 @@ window.WGrid.WGrid = class{
                     objBotao.contexto = contexto;
                     objBotao.onclick = function(evento){
                         contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
-
-                        //Faz um scroll na grid para a ultima amostra criada
-                        setTimeout(function(){
-                            (document)
-                            .getElementById(contexto.idElementoPai)
-                            .scrollTo({
-                                top: (document).getElementById(contexto.idElementoPai).scrollHeight,
-                                behavior: 'smooth'
-                              });
-
-                        }, 70);
                     }
                 }
 

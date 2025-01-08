@@ -10,6 +10,7 @@ const minhaGrid = new WGrid.WGrid([
     * As colunas
     */
     colunas: ['Name', 'Age'],
+    flexibilidade: ['Text', 'Number'],
 
     /**
     * Configurações das colunas 

@@ -23,6 +23,7 @@ window.WGrid.WGrid = class{
         this.elementoPai   = document.getElementById( this.idElementoPai ); 
         this.tituloGrid    = this.gridConfig.titulo;
         this.nomesColunas  = this.gridConfig.colunas;
+        this.flexibilidade = this.gridConfig.flexibilidade || [];
         this.statusColunas = this.gridConfig.status;
         this.callbacks     = this.gridConfig.callbacks || {};
         this.copyOnClick   = this.gridConfig.copyOnClick || false;
@@ -46,6 +47,85 @@ window.WGrid.WGrid = class{
             throw 'Voce precisa definir onde a grid vai ficar!. Defina "elementoPai" ';
         }
 
+        this.render();
+    }
+    
+    /**
+    * Converte este objeto para DataStructure 
+    * @returns {Vectorization.DataStructure} 
+    */
+    toDataStructure(){
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        return window.Analise.DataStructure(
+            this.dados,
+            {
+                campos: this.colunas,
+                flexibilidade: this.flexibilidade
+            }
+        );
+    }
+
+    /**
+    * Converte este objeto para Matrix
+    * @returns {Vectorization.Matrix} 
+    */
+    toMatrix(){
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        return Vectorization.Matrix( this.dados, {flexibilidade: this.flexibilidade} );
+    }
+
+    /**
+    * Importa os dados de uma Matrix para essa Grid
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromMatrix( objMatrix ){
+        if(!objMatrix){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objMatrix.raw().copyWithin()];
+        this.render();
+    }
+
+    /**
+    * Importa os dados de um Array para essa Grid
+    * Semelhante ao fromMatrix, porém usando apenas Arrays do JavaScript
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromArray( objMatrix ){
+        if(!objMatrix){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objMatrix.copyWithin()];
+        this.render();
+    }
+
+    /**
+    * Importa os dados de um DataStructure para essa Grid
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromDataStructure( objDataStructure ){
+        if(!objDataStructure){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objDataStructure.raw().copyWithin()];
         this.render();
     }
 
@@ -314,7 +394,12 @@ window.WGrid.WGrid = class{
     }
 
     /** Desenha a grid no elemento pai */
-    render() {
+    render( novosDados=null ) {
+        //Se tiver novos dados para trocar
+        if( novosDados != null ){
+            this.dados = novosDados;
+        }
+
         //Roda o callback beforeRender
         if( this.callbacks.beforeRender ){
             this.callbacks.beforeRender.bind(this)( this );

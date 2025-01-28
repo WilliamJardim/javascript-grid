@@ -80,6 +80,11 @@
     text-align: center;
 }
 
+.input-coluna-editavel[type=checkbox]{
+    width: 38pt;
+    height: 38pt;
+}
+
 .ocupacao-invisivel{
     display: block;
     visibility: hidden;

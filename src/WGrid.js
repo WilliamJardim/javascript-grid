@@ -200,13 +200,34 @@ window.WGrid.WGrid = class{
                             //idLinha != '_inicio' significa que ele vai ignorar o cabeçalho
                             ( (statusColuna || {}).editable != undefined && (statusColuna || {}).editable != false && classeLinha != 'linha-detalhes' && idLinha != '_inicio') 
                                                           //Se for editavel
-                                                          ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
-                                                                    value=${valorColunaAtual}
-                                                                    class='input-coluna-editavel'
-                                                                    _linha=${idLinha}
-                                                                    _coluna=${i}
-                                                                    _grid=${this.idElementoPai}
-                                                             />`
+                                                          ? (
+                                                            //Se for booleano usa checkbox
+                                                            (statusColuna || {}).typeof == 'boolean' 
+                                                            ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
+                                                                        type='checkbox'
+                                                                        checked=${valorColunaAtual}
+                                                                        class='input-coluna-editavel'
+                                                                        _linha=${idLinha}
+                                                                        _coluna=${i}
+                                                                        _grid=${this.idElementoPai}
+                                                                />`
+                                                            :
+                                                            //Se for texto, usa um input normal
+                                                            (
+                                                                (statusColuna || {}).typeof == 'string' ||
+                                                                (statusColuna || {}).typeof == 'number'
+                                                            ) 
+                                                            ?
+                                                                `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
+                                                                        value=${valorColunaAtual}
+                                                                        class='input-coluna-editavel'
+                                                                        _linha=${idLinha}
+                                                                        _coluna=${i}
+                                                                        _grid=${this.idElementoPai}
+                                                                />`
+                                                             :
+                                                             ''
+                                                            )
 
                                                           //Se não for editavel
                                                           : valorColunaAtual 
@@ -648,7 +669,9 @@ window.WGrid.WGrid = class{
                     {
                         objInput.onchange = function(evento){
 
-                            const valorEditado = evento.target.value;
+                            const valorEditado = evento.target.type == 'checkbox' 
+                                                    ? evento.target.checked
+                                                    : evento.target.value;
 
                             //Edita o objeto dados interno
                             contexto.setColunaAmostra( numLinha, numColuna, valorEditado );

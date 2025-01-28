@@ -42,7 +42,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         'Active': {
             typeof: 'boolean',
             visible: true,
-            select: true,
+            select: false,
             copy: false,
             editable: true
         }

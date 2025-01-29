@@ -543,6 +543,63 @@ window.WGrid.WGrid = class{
         }
 
         /**
+        * Identifica algumas coisas importantes que vão afetar a criação das colunas 
+        */
+        for( let i = 0 ; i < this.nomesColunas.length ; i++ )
+        {
+            const nomeColunaAtual  = this.getNomeColuna( i );
+            const indiceColuna     = this.getIndiceCampo( nomeColunaAtual );
+            const statusColuna     = this.getStatusColuna( nomeColunaAtual );
+            const isTextChoice     = (statusColuna || {}).typeof == 'text-choice' ? true : false;
+
+            /**
+            * Se a coluna for uma escolha de texto
+            */
+            if( isTextChoice == true ){
+                    
+                //Se não informar propriedade 'choices'
+                if( (statusColuna || {}).choices == null || (statusColuna || {}).choices == undefined ){
+                    throw Error(`Para criar uma escolha de texto voce precisa dizer quais são as opcões, ou usar uma opção para escolher para voce`);
+                }   
+
+                //Se o choices for uma opção interna
+                if( typeof (statusColuna || {}).choices == 'string' )
+                {
+                    switch( (statusColuna || {}).choices )
+                    {
+                        //Se for identificar as possiblidades de escolha disponiveis no dataset
+                        case 'dataset':
+                        case 'detect':
+                        case 'from-dataset':
+                        case 'detect-from-dataset':
+                        case 'detect-dataset':     
+                            const jaForam = {};
+
+                            //Faz o statusColuna virar um Array
+                            (statusColuna || {})._choices = (statusColuna || {}).choices;
+                            (statusColuna || {}).choices = [];
+
+                            //Para cada amostra
+                            for( let i = 0 ; i < this.dados.length ; i++ )
+                            {
+                                const dadosAmostra = this.dados[i];
+                                const valorColuna  = dadosAmostra[ indiceColuna ];
+                                
+                                //Se ainda não foi
+                                if( jaForam[valorColuna] != true )
+                                {
+                                    (statusColuna || {}).choices.push( { id: valorColuna } );
+                                    jaForam[ valorColuna ] = true;
+                                }
+                            }
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        /**
         * Cria o cabeçalho 
         */
         const dadosCabecalho = this.nomesColunas || this.dados.at(0);

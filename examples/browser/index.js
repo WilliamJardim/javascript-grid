@@ -1,6 +1,8 @@
 const estrutura = Analise.DataStructure([
     ['William', 21, 'Sim', 'Aprovado'],
-    ['Rafael',  25, 'Sim', 'Aprovado']
+    ['Rafael',  25, 'Sim', 'Aprovado'],
+    ['Test',     25, 'Sim', 'NaoDefinido'],
+    ['Test2',    25, 'Sim', 'NaoDefinido']
 
 ], {
     /**
@@ -48,11 +50,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         },
         'Con': {
             typeof: 'text-choice',
-            choices: [
-                { id: 'Aprovado' },
-                { id: 'Reprovado' },
-                { id: 'Incerto' }
-            ],
+            choices: 'dataset',
             visible: true,
             select: false,
             copy: false,

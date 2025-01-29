@@ -281,6 +281,7 @@ window.WGrid.WGrid = class{
                                                                     _grid=${this.idElementoPai}
                                                                 >
                                                                     <select id='select-${nomeColunaAtual}-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'
+                                                                            value='${valorColunaAtual}'
                                                                             class='select-coluna-editavel'
                                                                             _linha=${idLinha}
                                                                             _coluna=${i}

@@ -53,7 +53,6 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         },
         'Con': {
             typeof: 'text-choice',
-            begin: 'Aprovado',
             choices: 'dataset',
 
             choicesExpand: [

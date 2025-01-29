@@ -18,4 +18,5 @@ A simple Grid built in JavaScript from scratch
 # Other types
 <p align="center">
   <img src="./imagens/grid6-en.png" alt="Exemplo 6" width="45%">
+  <img src="./imagens/grid7-en.png" alt="Exemplo 7" width="45%">
 </p>

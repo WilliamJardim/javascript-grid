@@ -1,8 +1,8 @@
 const estrutura = Analise.DataStructure([
-    ['William', 21, false, 'Aprovado'],
-    ['Rafael',  25, 'Nao', 'Aprovado'],
-    ['Test',     25, 'Sim', 'NaoDefinido'],
-    ['Test2',    25, 'Sim', 'NaoDefinido']
+    ['William', 21, false, 'ONLINE'],
+    ['Rafael',  25, 'Nao', 'OFFLINE'],
+    ['Test',     25, 'Sim', 'OFFLINE'],
+    ['Test2',    25, 'Sim', 'OFFLINE']
 
 ], {
     /**

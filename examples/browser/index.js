@@ -1,13 +1,13 @@
 const estrutura = Analise.DataStructure([
-    ['William', 21, true],
-    ['Rafael',  25, true]
+    ['William', 21, 'Sim'],
+    ['Rafael',  25, 'Sim']
 
 ], {
     /**
     * As colunas
     */
     campos: ['Name', 'Age', 'Active'],
-    flexibilidade: ['Text', 'Number', 'Boolean'],
+    flexibilidade: ['Text', 'Number', 'Text'],
 });
 
 const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
@@ -18,7 +18,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
     * As colunas
     */
     colunas: ['Name', 'Age', 'Active'],
-    flexibilidade: ['Text', 'Number', 'Boolean'],
+    flexibilidade: ['Text', 'Number', 'Text'],
 
     /**
     * Configurações das colunas 

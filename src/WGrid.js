@@ -194,35 +194,18 @@ window.WGrid.WGrid = class{
             const valorColunaTratadoBoolean = ( (statusColuna || {}).typeof == 'string' || 
                                                 (statusColuna || {}).typeof == 'number'
                                             ) 
-                                            ? dados[i]
+                                            ? valorColunaAtual
                                             : 
                                             //Se for booleano, e se os valores forem Sim ou Nao, eles convertem para booleano
                                             (statusColuna || {}).typeof == 'boolean' 
-                                                ? dados[i] == 'Sim' 
+                                                ? valorColunaAtual == 'Sim' 
                                                     ? true 
                                                     :
-                                                  dados[i] == 'Nao' 
+                                                  valorColunaAtual == 'Nao' 
                                                     ? false
                                                     : false 
 
                                                 :'';
-
-            const valorColunaTratadoBooleanExibir = (statusColuna || {}).typeof == 'boolean' 
-                                                        ? 
-                                                        dados[i] == 'Sim' 
-                                                            ? true 
-                                                            : 
-                                                        dados[i] == 'Nao' 
-                                                            ? false 
-                                                            : dados[i]
-                                                    :
-                                                    (statusColuna || {}).typeof == 'text'
-                                                        ? String(dados[i]) == 'true'
-                                                            ? 'Sim' 
-                                                            : 'Nao' 
-                                                        : String(dados[i]) == 'false'
-                                                            ? 'Nao' 
-                                                            : '' 
 
             /**
             * Se a coluna esta visivel ou se, nao existe nenhuma configuracao para a coluna
@@ -240,7 +223,7 @@ window.WGrid.WGrid = class{
                                                             (statusColuna || {}).typeof == 'boolean' 
                                                             ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
                                                                         type='checkbox'
-                                                                        checked=${ valorColunaTratadoBooleanExibir }
+                                                                        checked=${ valorColunaTratadoBoolean }
                                                                         class='input-coluna-editavel'
                                                                         _linha=${idLinha}
                                                                         _coluna=${i}

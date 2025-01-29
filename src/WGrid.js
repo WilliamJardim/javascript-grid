@@ -516,6 +516,25 @@ window.WGrid.WGrid = class{
     adicionarAmostra( dadosAmostra ){
         const contexto = this;
 
+        /**
+        * Preenche com os valores iniciais definidos pela propriedade "begin" no status das colunas
+        */
+        for( let i = 0 ; i < this.nomesColunas.length ; i++ )
+        {
+            const nomeColuna   = this.getNomeColuna(i);
+            const statusColuna = this.getStatusColuna( nomeColuna );
+
+            if( statusColuna.begin != undefined && 
+                (
+                    dadosAmostra[i] == '.' ||
+                    dadosAmostra[i] == undefined ||
+                    dadosAmostra[i] == null
+                ) 
+            ){
+                dadosAmostra[i] = statusColuna.begin;
+            }
+        }
+
         this.dados.push(dadosAmostra);
         this.render();
 

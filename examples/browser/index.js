@@ -28,6 +28,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
     status: {
         'Name': {
             typeof: 'string',
+            begin: '.',
             visible: true,
             select: true,
             copy: false,
@@ -36,6 +37,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         },
         'Age': {
             typeof: 'number',
+            begin: 0,
             visible: true,
             select: true,
             copy: false,
@@ -43,6 +45,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         },
         'Active': {
             typeof: 'boolean',
+            begin: false,
             visible: true,
             select: false,
             copy: false,
@@ -50,6 +53,7 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         },
         'Con': {
             typeof: 'text-choice',
+            begin: 'Aprovado',
             choices: 'dataset',
 
             choicesExpand: [

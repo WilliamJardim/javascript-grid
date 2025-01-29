@@ -74,6 +74,7 @@ window.WGrid.WGrid = class{
                 const statusProximaColuna = context.getStatusColuna( nomeProximaColuna );
 
                 if( (
+                        context.getStatusColuna(nomeProximaColuna) &&
                         context.getStatusColuna(nomeProximaColuna).editable != undefined && 
                         context.getStatusColuna(nomeProximaColuna).editable != null && 
                         context.getStatusColuna(nomeProximaColuna).editable != false &&

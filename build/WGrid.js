@@ -10461,15 +10461,22 @@ window.WGrid.WGrid = class{
             * Encontra qual é a proxima coluna mais proxima que tem "editable == true"
             */
             let indiceProximaColuna = 0;
+            debugger
+
             for( let i = indiceColuna+1 ; i < context.nomesColunas.length ; i++ )
             {
-                const indiceColunaAtual = i;
-                const nomeProximaColuna = context.getNomeColuna(i);
+                const indiceColunaAtual    = i;
+                const nomeProximaColuna    = context.getNomeColuna(i);
+                const statusProximaColuna  = this.getStatusColuna( nomeProximaColuna );
+
+                debugger
 
                 if( (
                         context.getStatusColuna(nomeProximaColuna).editable != undefined && 
                         context.getStatusColuna(nomeProximaColuna).editable != null && 
-                        context.getStatusColuna(nomeProximaColuna).editable != false
+                        context.getStatusColuna(nomeProximaColuna).editable != false &&
+                        //Se não for booleano com checkbox
+                        statusProximaColuna.typeof != 'boolean'
                     )
                 ){
                     indiceProximaColuna = indiceColunaAtual;

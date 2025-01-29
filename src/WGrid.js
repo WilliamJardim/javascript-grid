@@ -257,8 +257,17 @@ window.WGrid.WGrid = class{
                                                                             //Para cada possibilidade de escolha
                                                                             (statusColuna || {}).choices
                                                                                 .map(function( objChoice ){
+                                                                                
+                                                                                    const texto = (typeof objChoice == 'object') 
+                                                                                                    ? objChoice.id 
+                                                                                                    : 
+
+                                                                                                  (typeof objChoice == 'string')
+                                                                                                    ? objChoice
+                                                                                                    :''
+
                                                                                     return `
-                                                                                        <option value='${objChoice.id}'> ${objChoice.id} </option>
+                                                                                        <option value='${ texto }'> ${ texto } </option>
                                                                                     `
                                                                                 })
                                                                         }

@@ -57,6 +57,11 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
                 'Nenhuma'
             ],
 
+            //Permite omitir certas opções
+            choicesOmit: [
+                'NaoDefinido'
+            ],  
+
             visible: true,
             select: false,
             copy: false,

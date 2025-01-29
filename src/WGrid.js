@@ -566,7 +566,8 @@ window.WGrid.WGrid = class{
             */
             if( isTextChoice == true ){
 
-                const haveExpand = (statusColuna || {}).choicesExpand != undefined ? true : false;
+                const haveExpand     = (statusColuna || {}).choicesExpand != undefined ? true : false;
+                const haveOmissions  = (statusColuna || {}).choicesOmit   != undefined ? true : false;
                     
                 //Se não informar propriedade 'choices'
                 if( (statusColuna || {}).choices == null || (statusColuna || {}).choices == undefined ){
@@ -625,6 +626,30 @@ window.WGrid.WGrid = class{
                                         :'';
 
                         (statusColuna || {}).choices.push( { id: texto } );
+                    });
+                }
+
+                /**
+                * Se tiver alguma omissão, para remover certas opções
+                */
+                if(haveOmissions)
+                {
+                    (statusColuna || {}).choicesOmit
+                    .forEach(function( objChoice ){
+
+                        const textoOmitir = (typeof objChoice == 'object') 
+                                              ? objChoice.id 
+                                              : 
+
+                                            (typeof objChoice == 'string')
+                                              ? objChoice
+                                              :'';
+
+                        (statusColuna || {}).choices = (statusColuna || {}).choices.filter(function( objChoiceExistente ){
+                           if( objChoiceExistente.id != textoOmitir ){
+                              return objChoiceExistente;
+                           } 
+                        });
                     });
                 }
             }

@@ -733,8 +733,11 @@ window.WGrid.WGrid = class{
                         }
 
                         //Se a coluna tiver um evento em statusColunas
-                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
-                            contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
+                        if( contexto.statusColunas != undefined )
+                        {
+                            if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'] ){
+                                contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto );
+                            }
                         }
 
                         /**
@@ -743,7 +746,11 @@ window.WGrid.WGrid = class{
 
                         //Se pode copiar o texto
                         if( contexto.selectOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowCopy != false ||
-                            contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true    
+                            (
+                                contexto.getNomeColuna( idColuna ) != undefined &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )) != undefined &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).copy == true
+                            )
                         ){
                             const valorColunaClicando = contexto.getPosicao( idLinha, idColuna ).valor;
 
@@ -754,7 +761,11 @@ window.WGrid.WGrid = class{
 
                         //Se pode selecionar o texto
                         if( contexto.copyOnClick == true && contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).allowSelect != false ||
-                            contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true    
+                            (
+                                contexto.getNomeColuna( idColuna ) != undefined &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )) != undefined &&
+                                contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).select == true
+                            )    
                         ){
                             if( contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).editable != undefined &&
                                 contexto.getStatusColuna(contexto.getNomeColuna( idColuna )).editable != false &&
@@ -788,14 +799,17 @@ window.WGrid.WGrid = class{
                         }
                         
                         //Se a coluna tiver um evento em statusColunas
-                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
-                            if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                        }
-                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
-                            if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
-                        }
-                        if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
-                            if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                        if( contexto.statusColunas != undefined )
+                        {
+                            if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'] ){
+                                if( evento.button == 0 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onLeftClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                            }
+                            if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'] ){
+                                if( evento.button == 1 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onMiddleClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                            }
+                            if( contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'] ){
+                                if( evento.button == 2 ){ contexto.statusColunas[ contexto.getNomeColuna( idColuna ) ]['onRightClick'].bind( contexto )( i, e, contexto.getNomeColuna( idColuna ), contexto.getStatusColuna(contexto.getNomeColuna( idColuna )), evento.target, contexto ); };
+                            }
                         }
                     })
                 }

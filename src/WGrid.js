@@ -247,8 +247,13 @@ window.WGrid.WGrid = class{
                                                              :
                                                              //Se for uma escolha de texto
                                                              (statusColuna || {}).typeof == 'text-choice'
-                                                             ? `<div id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'>
-                                                                    <select id='${nomeColunaAtual}'
+                                                             ? `<div id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'
+                                                                     class='select-coluna-editavel'
+                                                                     _linha=${idLinha}
+                                                                    _coluna=${i}
+                                                                    _grid=${this.idElementoPai}
+                                                                >
+                                                                    <select id='select-${nomeColunaAtual}'
                                                                             class='select-coluna-editavel'
                                                                             _linha=${idLinha}
                                                                             _coluna=${i}

@@ -10441,11 +10441,11 @@ window.WGrid.WGrid = class{
         this.editableMap = {};
         this.nomesColunas.forEach(function( nomeColuna, indiceColuna ){
 
+            /*
             let indiceProximaColuna = context.nomesColunas.reduce(function( nomeColunaAtual, nomeProximaColuna ){
                                             const indiceColunaAtual = context.getIndiceCampo(nomeProximaColuna);
 
-                                            if( indiceColunaAtual > indiceColuna && 
-                                                context.getStatusColuna(nomeProximaColuna) != undefined &&
+                                            if( indiceColunaAtual > indiceColuna &&
                                                 (
                                                   context.getStatusColuna(nomeProximaColuna).editable != undefined && 
                                                   context.getStatusColuna(nomeProximaColuna).editable != null && 
@@ -10455,6 +10455,28 @@ window.WGrid.WGrid = class{
                                                 return indiceColunaAtual;
                                             }
                                       });
+            */
+
+            /**
+            * Encontra qual é a proxima coluna mais proxima que tem "editable == true"
+            */
+            let indiceProximaColuna = 0;
+            for( let i = indiceColuna+1 ; i < context.nomesColunas.length ; i++ )
+            {
+                const indiceColunaAtual = i;
+                const nomeProximaColuna = context.getNomeColuna(i);
+
+                if( (
+                        context.getStatusColuna(nomeProximaColuna).editable != undefined && 
+                        context.getStatusColuna(nomeProximaColuna).editable != null && 
+                        context.getStatusColuna(nomeProximaColuna).editable != false
+                    )
+                ){
+                    indiceProximaColuna = indiceColunaAtual;
+                    break;
+                }
+
+            }
 
             if(indiceProximaColuna)
             {
@@ -11268,7 +11290,7 @@ window.WGrid.WGrid = class{
 
                         objInput.addEventListener('keydown', function(eventoKeydown){
                             if( eventoKeydown.key == 'Enter' ){
-                                
+
                                 const idColuna = eventoKeydown.target.getAttribute('_coluna');
 
                                 setTimeout(()=>{

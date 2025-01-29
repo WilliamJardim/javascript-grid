@@ -10461,22 +10461,20 @@ window.WGrid.WGrid = class{
             * Encontra qual é a proxima coluna mais proxima que tem "editable == true"
             */
             let indiceProximaColuna = 0;
-            debugger
-
             for( let i = indiceColuna+1 ; i < context.nomesColunas.length ; i++ )
             {
-                const indiceColunaAtual    = i;
-                const nomeProximaColuna    = context.getNomeColuna(i);
-                const statusProximaColuna  = this.getStatusColuna( nomeProximaColuna );
-
-                debugger
+                const indiceColunaAtual   = i;
+                const nomeProximaColuna   = context.getNomeColuna(i);
+                const statusProximaColuna = context.getStatusColuna( nomeProximaColuna );
 
                 if( (
                         context.getStatusColuna(nomeProximaColuna).editable != undefined && 
                         context.getStatusColuna(nomeProximaColuna).editable != null && 
                         context.getStatusColuna(nomeProximaColuna).editable != false &&
-                        //Se não for booleano com checkbox
-                        statusProximaColuna.typeof != 'boolean'
+                        //Se nao for um booleano com checkbox
+                        statusProximaColuna.typeof != 'boolean' &&
+                        //Se tambem nao for uma escolha de texto
+                        statusProximaColuna.typeof != 'text-choice'
                     )
                 ){
                     indiceProximaColuna = indiceColunaAtual;
@@ -10647,7 +10645,7 @@ window.WGrid.WGrid = class{
                                                             (statusColuna || {}).typeof == 'boolean' 
                                                             ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
                                                                         type='checkbox'
-                                                                        checked=${ valorColunaTratadoBoolean }
+                                                                        ${ valorColunaTratadoBoolean == true ? 'checked' : ''}
                                                                         class='input-coluna-editavel'
                                                                         _linha=${idLinha}
                                                                         _coluna=${i}
@@ -10676,7 +10674,8 @@ window.WGrid.WGrid = class{
                                                                     _coluna=${i}
                                                                     _grid=${this.idElementoPai}
                                                                 >
-                                                                    <select id='select-${nomeColunaAtual}'
+                                                                    <select id='select-${nomeColunaAtual}-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'
+                                                                            value='${valorColunaAtual}'
                                                                             class='select-coluna-editavel'
                                                                             _linha=${idLinha}
                                                                             _coluna=${i}
@@ -10912,6 +10911,25 @@ window.WGrid.WGrid = class{
     adicionarAmostra( dadosAmostra ){
         const contexto = this;
 
+        /**
+        * Preenche com os valores iniciais definidos pela propriedade "begin" no status das colunas
+        */
+        for( let i = 0 ; i < this.nomesColunas.length ; i++ )
+        {
+            const nomeColuna   = this.getNomeColuna(i);
+            const statusColuna = this.getStatusColuna( nomeColuna );
+
+            if( statusColuna.begin != undefined && 
+                (
+                    dadosAmostra[i] == '.' ||
+                    dadosAmostra[i] == undefined ||
+                    dadosAmostra[i] == null
+                ) 
+            ){
+                dadosAmostra[i] = statusColuna.begin;
+            }
+        }
+
         this.dados.push(dadosAmostra);
         this.render();
 
@@ -11027,7 +11045,7 @@ window.WGrid.WGrid = class{
                                 const valorColuna  = dadosAmostra[ indiceColuna ];
                                 
                                 //Se ainda não foi
-                                if( jaForam[valorColuna] != true )
+                                if( jaForam[valorColuna] == undefined )
                                 {
                                     (statusColuna || {}).choices.push( { id: valorColuna } );
                                     jaForam[ valorColuna ] = true;
@@ -11054,7 +11072,11 @@ window.WGrid.WGrid = class{
                                         ? objChoice
                                         :'';
 
-                        (statusColuna || {}).choices.push( { id: texto } );
+                         //Se ja não tem
+                         if( (statusColuna || {}).choices.filter((objChoice)=>{ return objChoice.id == texto }).length == 0 )
+                         {
+                            (statusColuna || {}).choices.push( { id: texto } );
+                         }
                     });
                 }
 

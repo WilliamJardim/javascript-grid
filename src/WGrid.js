@@ -251,7 +251,7 @@ window.WGrid.WGrid = class{
                                                             (statusColuna || {}).typeof == 'boolean' 
                                                             ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
                                                                         type='checkbox'
-                                                                        checked=${ valorColunaTratadoBoolean }
+                                                                        ${ valorColunaTratadoBoolean == true ? 'checked' : ''}
                                                                         class='input-coluna-editavel'
                                                                         _linha=${idLinha}
                                                                         _coluna=${i}

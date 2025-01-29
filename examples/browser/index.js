@@ -1,6 +1,6 @@
 const estrutura = Analise.DataStructure([
-    ['William', 21, 'Sim', 'Aprovado'],
-    ['Rafael',  25, 'Sim', 'Aprovado'],
+    ['William', 21, false, 'Aprovado'],
+    ['Rafael',  25, 'Nao', 'Aprovado'],
     ['Test',     25, 'Sim', 'NaoDefinido'],
     ['Test2',    25, 'Sim', 'NaoDefinido']
 

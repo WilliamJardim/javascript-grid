@@ -51,6 +51,12 @@ const minhaGrid = new WGrid.WGrid(estrutura.raw(), {
         'Con': {
             typeof: 'text-choice',
             choices: 'dataset',
+
+            //Permite acrescentar opções que não estavam presentes no dataset
+            choicesExpand: [ 
+                'Nenhuma'
+            ],
+
             visible: true,
             select: false,
             copy: false,

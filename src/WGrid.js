@@ -565,6 +565,8 @@ window.WGrid.WGrid = class{
             * Se a coluna for uma escolha de texto
             */
             if( isTextChoice == true ){
+
+                const haveExpand = (statusColuna || {}).choicesExpand != undefined ? true : false;
                     
                 //Se não informar propriedade 'choices'
                 if( (statusColuna || {}).choices == null || (statusColuna || {}).choices == undefined ){
@@ -604,6 +606,26 @@ window.WGrid.WGrid = class{
 
                             break;
                     }
+                }
+
+                /**
+                * Se tiver alguma expansão, para adicionar novas opções que não estavam presentes no dataset 
+                */
+                if(haveExpand)
+                {
+                    (statusColuna || {}).choicesExpand
+                    .forEach(function( objChoice ){
+
+                        const texto = (typeof objChoice == 'object') 
+                                        ? objChoice.id 
+                                        : 
+
+                                      (typeof objChoice == 'string')
+                                        ? objChoice
+                                        :'';
+
+                        (statusColuna || {}).choices.push( { id: texto } );
+                    });
                 }
             }
         }

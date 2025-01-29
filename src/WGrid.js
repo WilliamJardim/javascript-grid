@@ -244,7 +244,27 @@ window.WGrid.WGrid = class{
                                                                         _grid=${this.idElementoPai}
                                                                 />`
                                                              :
-                                                             ''
+                                                             //Se for uma escolha de texto
+                                                             (statusColuna || {}).typeof == 'text-choice'
+                                                             ? `<div id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'>
+                                                                    <select id='${nomeColunaAtual}'
+                                                                            class='select-coluna-editavel'
+                                                                            _linha=${idLinha}
+                                                                            _coluna=${i}
+                                                                            _grid=${this.idElementoPai}
+                                                                    >
+                                                                        ${
+                                                                            //Para cada possibilidade de escolha
+                                                                            (statusColuna || {}).choices
+                                                                                .map(function( objChoice ){
+                                                                                    return `
+                                                                                        <option value='${objChoice.id}'> ${objChoice.id} </option>
+                                                                                    `
+                                                                                })
+                                                                        }
+                                                                    </select>
+                                                                </div>`
+                                                             :''
                                                             )
 
                                                           //Se não for editavel
@@ -672,9 +692,26 @@ window.WGrid.WGrid = class{
             */
             if(document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0])
             {
-                (document)
-                .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
-                .querySelectorAll('input')
+                //Pega todos os elementos do tipo input e tambem do tipo select em uma "query concatenada"
+                [].concat(
+                        [
+                            //Pega todos os inputs
+                            ...
+                               (document)
+                               .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+                               .querySelectorAll('input')
+                        ]
+                    )
+                    .concat(
+                        [
+                            //Pega todos os selects tambem
+                            ...
+                               (document)
+                               .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+                               .querySelectorAll('select')
+                        ]
+                )
+                //Itera sobre essa concatenação
                 .forEach(function( objInput, indiceObjInput ){
                     const idInput      = objInput.id;
                     const numLinha     = Number( objInput.getAttribute('_linha') );

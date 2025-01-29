@@ -51,6 +51,7 @@ window.WGrid.WGrid = class{
                                             const indiceColunaAtual = context.getIndiceCampo(nomeProximaColuna);
 
                                             if( indiceColunaAtual > indiceColuna && 
+                                                context.getStatusColuna(nomeProximaColuna) != undefined &&
                                                 (
                                                   context.getStatusColuna(nomeProximaColuna).editable != undefined && 
                                                   context.getStatusColuna(nomeProximaColuna).editable != null && 

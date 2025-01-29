@@ -10406,6 +10406,8 @@ window.WGrid.libs = {
 window.WGrid.WGrid = class{
 
     constructor( dadosGrid=[], gridConfig={} ){
+        const context = this;
+
         // Verifica se a instação contém os estilo CSS
         if( ![...document.querySelectorAll('link[rel="stylesheet"]')].some( (link)=>{ return link.href.includes("WGrid.css") } ) ){
             console.warn(`Estilos CSS principal não carregados!. Verifique os arquivos no HTML`);
@@ -10413,15 +10415,58 @@ window.WGrid.WGrid = class{
 
         this.gridConfig    = gridConfig;
         this.dados         = dadosGrid;
-        this.idElementoPai = this.gridConfig.elementoPai; 
-        this.elementoPai   = document.getElementById( this.idElementoPai ); 
-        this.tituloGrid    = this.gridConfig.titulo;
-        this.nomesColunas  = this.gridConfig.colunas;
-        this.statusColunas = this.gridConfig.status;
-        this.callbacks     = this.gridConfig.callbacks || {};
-        this.copyOnClick   = this.gridConfig.copyOnClick || false;
-        this.selectOnClick = this.gridConfig.selectOnClick || false;
-        this.searchBar     = this.gridConfig.searchBar;
+
+        //Se o dados for um DataStructure do Analise
+        if( window.WGrid.libs.Analise != null && this.dados.objectName && this.dados.objectName == 'DataStructure' ){
+            this._datastructure_origem = dadosGrid;
+            this.dados = dadosGrid.raw();
+        }
+
+        this.idElementoPai   = this.gridConfig.elementoPai; 
+        this.elementoPai     = document.getElementById( this.idElementoPai ); 
+        this.tituloGrid      = this.gridConfig.titulo;
+        this.nomesColunas    = this.gridConfig.colunas;
+        this.flexibilidade   = this.gridConfig.flexibilidade || [];
+        this.statusColunas   = this.gridConfig.status;
+        this.callbacks       = this.gridConfig.callbacks || {};
+        this.copyOnClick     = this.gridConfig.copyOnClick || false;
+        this.selectOnClick   = this.gridConfig.selectOnClick || false;
+        this.searchBar       = this.gridConfig.searchBar;
+        this.mirrorStructure = this.gridConfig.mirror;
+
+        /**
+        * Um mapa em ordem sequencial de todas as colunas editaveis feito assim:
+        * INDICE_COLUNA : INDICE_PROXIMA_COLUNA_EDITAVEL 
+        */
+        this.editableMap = {};
+        this.nomesColunas.forEach(function( nomeColuna, indiceColuna ){
+
+            let indiceProximaColuna = context.nomesColunas.reduce(function( nomeColunaAtual, nomeProximaColuna ){
+                                            const indiceColunaAtual = context.getIndiceCampo(nomeProximaColuna);
+
+                                            if( indiceColunaAtual > indiceColuna && 
+                                                context.getStatusColuna(nomeProximaColuna) != undefined &&
+                                                (
+                                                  context.getStatusColuna(nomeProximaColuna).editable != undefined && 
+                                                  context.getStatusColuna(nomeProximaColuna).editable != null && 
+                                                  context.getStatusColuna(nomeProximaColuna).editable != false
+                                                )
+                                            ){
+                                                return indiceColunaAtual;
+                                            }
+                                      });
+
+            if(indiceProximaColuna)
+            {
+                context.editableMap[ indiceColuna ] = {
+                    nomeColuna: nomeColuna,
+                    indiceProximaColuna: indiceProximaColuna,
+                    nomeProximaColuna: context.nomesColunas[ indiceProximaColuna ]
+                }
+            }
+
+        });
+
         if( this.searchBar == undefined ){
             this.searchBar = true;
         }
@@ -10442,6 +10487,85 @@ window.WGrid.WGrid = class{
 
         this.render();
     }
+    
+    /**
+    * Converte este objeto para DataStructure 
+    * @returns {Vectorization.DataStructure} 
+    */
+    toDataStructure(){
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        return window.Analise.DataStructure(
+            this.dados,
+            {
+                campos: this.colunas,
+                flexibilidade: this.flexibilidade
+            }
+        );
+    }
+
+    /**
+    * Converte este objeto para Matrix
+    * @returns {Vectorization.Matrix} 
+    */
+    toMatrix(){
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        return Vectorization.Matrix( this.dados, {flexibilidade: this.flexibilidade} );
+    }
+
+    /**
+    * Importa os dados de uma Matrix para essa Grid
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromMatrix( objMatrix ){
+        if(!objMatrix){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objMatrix.raw().copyWithin()];
+        this.render();
+    }
+
+    /**
+    * Importa os dados de um Array para essa Grid
+    * Semelhante ao fromMatrix, porém usando apenas Arrays do JavaScript
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromArray( objMatrix ){
+        if(!objMatrix){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objMatrix.copyWithin()];
+        this.render();
+    }
+
+    /**
+    * Importa os dados de um DataStructure para essa Grid
+    * @param {Analise.DataStructure} objDataStructure 
+    */
+    fromDataStructure( objDataStructure ){
+        if(!objDataStructure){
+            throw Error('Voce precisa informar a instancia do DataStructure!');
+        }
+        if( window.WGrid.libs.Analise == null ){
+            throw Error(`O pacote Analise não está instalado!`);
+        }
+
+        this.dados = [...objDataStructure.raw().copyWithin()];
+        this.render();
+    }
 
     /**
     * Cria uma linha 
@@ -10456,9 +10580,27 @@ window.WGrid.WGrid = class{
         */
         for( let i = 0 ; i < dados.length ; i++ )
         {
-            const valorColunaAtual = dados[i];
             const nomeColunaAtual  = this.getNomeColuna( i );
             const statusColuna     = this.getStatusColuna( nomeColunaAtual );
+
+            const valorColunaAtual =  dados[i]; 
+
+                                            //Se for texto ou número, pega o valor como está
+            const valorColunaTratadoBoolean = ( (statusColuna || {}).typeof == 'string' || 
+                                                (statusColuna || {}).typeof == 'number'
+                                            ) 
+                                            ? valorColunaAtual
+                                            : 
+                                            //Se for booleano, e se os valores forem Sim ou Nao, eles convertem para booleano
+                                            (statusColuna || {}).typeof == 'boolean' 
+                                                ? valorColunaAtual == 'Sim' 
+                                                    ? true 
+                                                    :
+                                                  valorColunaAtual == 'Nao' 
+                                                    ? false
+                                                    : false 
+
+                                                :'';
 
             /**
             * Se a coluna esta visivel ou se, nao existe nenhuma configuracao para a coluna
@@ -10471,13 +10613,63 @@ window.WGrid.WGrid = class{
                             //idLinha != '_inicio' significa que ele vai ignorar o cabeçalho
                             ( (statusColuna || {}).editable != undefined && (statusColuna || {}).editable != false && classeLinha != 'linha-detalhes' && idLinha != '_inicio') 
                                                           //Se for editavel
-                                                          ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
-                                                                    value=${valorColunaAtual}
-                                                                    class='input-coluna-editavel'
-                                                                    _linha=${idLinha}
-                                                                    _coluna=${i}
-                                                                    _grid=${this.idElementoPai}
-                                                             />`
+                                                          ? (
+                                                            //Se for booleano usa checkbox
+                                                            (statusColuna || {}).typeof == 'boolean' 
+                                                            ? `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
+                                                                        type='checkbox'
+                                                                        checked=${ valorColunaTratadoBoolean }
+                                                                        class='input-coluna-editavel'
+                                                                        _linha=${idLinha}
+                                                                        _coluna=${i}
+                                                                        _grid=${this.idElementoPai}
+                                                                />`
+                                                            :
+                                                            //Se for texto, usa um input normal
+                                                            (
+                                                                (statusColuna || {}).typeof == 'string' ||
+                                                                (statusColuna || {}).typeof == 'number'
+                                                            ) 
+                                                            ?
+                                                                `<input id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}' 
+                                                                        value=${valorColunaAtual}
+                                                                        class='input-coluna-editavel'
+                                                                        _linha=${idLinha}
+                                                                        _coluna=${i}
+                                                                        _grid=${this.idElementoPai}
+                                                                />`
+                                                             :
+                                                             //Se for uma escolha de texto
+                                                             (statusColuna || {}).typeof == 'text-choice'
+                                                             ? `<div id='input-coluna${i}-linha${idLinha}-grid-${this.idElementoPai}'>
+                                                                    <select id='${nomeColunaAtual}'
+                                                                            class='select-coluna-editavel'
+                                                                            _linha=${idLinha}
+                                                                            _coluna=${i}
+                                                                            _grid=${this.idElementoPai}
+                                                                    >
+                                                                        ${
+                                                                            //Para cada possibilidade de escolha
+                                                                            (statusColuna || {}).choices
+                                                                                .map(function( objChoice ){
+                                                                                
+                                                                                    const texto = (typeof objChoice == 'object') 
+                                                                                                    ? objChoice.id 
+                                                                                                    : 
+
+                                                                                                  (typeof objChoice == 'string')
+                                                                                                    ? objChoice
+                                                                                                    :''
+
+                                                                                    return `
+                                                                                        <option value='${ texto }'> ${ texto } </option>
+                                                                                    `
+                                                                                })
+                                                                        }
+                                                                    </select>
+                                                                </div>`
+                                                             :''
+                                                            )
 
                                                           //Se não for editavel
                                                           : valorColunaAtual 
@@ -10684,8 +10876,21 @@ window.WGrid.WGrid = class{
     * @param {String} novoNome 
     */
     adicionarAmostra( dadosAmostra ){
+        const contexto = this;
+
         this.dados.push(dadosAmostra);
         this.render();
+
+        //Faz um scroll na grid para a ultima amostra criada
+        setTimeout(function(){
+            (document)
+            .getElementById(contexto.idElementoPai)
+            .scrollTo({
+                top: (document).getElementById(contexto.idElementoPai).scrollHeight,
+                behavior: 'smooth'
+              });
+
+        }, 70);
     }
 
     /**
@@ -10709,6 +10914,12 @@ window.WGrid.WGrid = class{
 
     /** Desenha a grid no elemento pai */
     render() {
+
+        //Se estiver usando um 'mirrorStructure', ele vai estar sempre copiando os dados do DataStructure espelhado pra manter a grid atualizada sempre com os dados do DataStructure
+        if(  window.WGrid.libs.Analise != null && this.mirrorStructure ){
+            this.dados = this.mirrorStructure.raw();
+        }
+        
         //Roda o callback beforeRender
         if( this.callbacks.beforeRender ){
             this.callbacks.beforeRender.bind(this)( this );
@@ -10733,6 +10944,110 @@ window.WGrid.WGrid = class{
         if( this.buttons == true || typeof this.buttons == 'object' ){
             //Adiciona um toolbar para botões
             this.CriarLinha([], 'linha-toolbar');
+        }
+
+        /**
+        * Identifica algumas coisas importantes que vão afetar a criação das colunas 
+        */
+        for( let i = 0 ; i < this.nomesColunas.length ; i++ )
+        {
+            const nomeColunaAtual  = this.getNomeColuna( i );
+            const indiceColuna     = this.getIndiceCampo( nomeColunaAtual );
+            const statusColuna     = this.getStatusColuna( nomeColunaAtual );
+            const isTextChoice     = (statusColuna || {}).typeof == 'text-choice' ? true : false;
+
+            /**
+            * Se a coluna for uma escolha de texto
+            */
+            if( isTextChoice == true ){
+
+                const haveExpand     = (statusColuna || {}).choicesExpand != undefined ? true : false;
+                const haveOmissions  = (statusColuna || {}).choicesOmit   != undefined ? true : false;
+                    
+                //Se não informar propriedade 'choices'
+                if( (statusColuna || {}).choices == null || (statusColuna || {}).choices == undefined ){
+                    throw Error(`Para criar uma escolha de texto voce precisa dizer quais são as opcões, ou usar uma opção para escolher para voce`);
+                }   
+
+                //Se o choices for uma opção interna
+                if( typeof (statusColuna || {}).choices == 'string' )
+                {
+                    switch( (statusColuna || {}).choices )
+                    {
+                        //Se for identificar as possiblidades de escolha disponiveis no dataset
+                        case 'dataset':
+                        case 'detect':
+                        case 'from-dataset':
+                        case 'detect-from-dataset':
+                        case 'detect-dataset':     
+                            const jaForam = {};
+
+                            //Faz o statusColuna virar um Array
+                            (statusColuna || {})._choices = (statusColuna || {}).choices;
+                            (statusColuna || {}).choices = [];
+
+                            //Para cada amostra
+                            for( let i = 0 ; i < this.dados.length ; i++ )
+                            {
+                                const dadosAmostra = this.dados[i];
+                                const valorColuna  = dadosAmostra[ indiceColuna ];
+                                
+                                //Se ainda não foi
+                                if( jaForam[valorColuna] != true )
+                                {
+                                    (statusColuna || {}).choices.push( { id: valorColuna } );
+                                    jaForam[ valorColuna ] = true;
+                                }
+                            }
+
+                            break;
+                    }
+                }
+
+                /**
+                * Se tiver alguma expansão, para adicionar novas opções que não estavam presentes no dataset 
+                */
+                if(haveExpand)
+                {
+                    (statusColuna || {}).choicesExpand
+                    .forEach(function( objChoice ){
+
+                        const texto = (typeof objChoice == 'object') 
+                                        ? objChoice.id 
+                                        : 
+
+                                      (typeof objChoice == 'string')
+                                        ? objChoice
+                                        :'';
+
+                        (statusColuna || {}).choices.push( { id: texto } );
+                    });
+                }
+
+                /**
+                * Se tiver alguma omissão, para remover certas opções
+                */
+                if(haveOmissions)
+                {
+                    (statusColuna || {}).choicesOmit
+                    .forEach(function( objChoice ){
+
+                        const textoOmitir = (typeof objChoice == 'object') 
+                                              ? objChoice.id 
+                                              : 
+
+                                            (typeof objChoice == 'string')
+                                              ? objChoice
+                                              :'';
+
+                        (statusColuna || {}).choices = (statusColuna || {}).choices.filter(function( objChoiceExistente ){
+                           if( objChoiceExistente.id != textoOmitir ){
+                              return objChoiceExistente;
+                           } 
+                        });
+                    });
+                }
+            }
         }
 
         /**
@@ -10885,9 +11200,26 @@ window.WGrid.WGrid = class{
             */
             if(document.getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0])
             {
-                (document)
-                .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
-                .querySelectorAll('input')
+                //Pega todos os elementos do tipo input e tambem do tipo select em uma "query concatenada"
+                [].concat(
+                        [
+                            //Pega todos os inputs
+                            ...
+                               (document)
+                               .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+                               .querySelectorAll('input')
+                        ]
+                    )
+                    .concat(
+                        [
+                            //Pega todos os selects tambem
+                            ...
+                               (document)
+                               .getElementsByName(`linha-${idLinha}-grid-${contexto.idElementoPai}`)[0]
+                               .querySelectorAll('select')
+                        ]
+                )
+                //Itera sobre essa concatenação
                 .forEach(function( objInput, indiceObjInput ){
                     const idInput      = objInput.id;
                     const numLinha     = Number( objInput.getAttribute('_linha') );
@@ -10900,7 +11232,9 @@ window.WGrid.WGrid = class{
                     {
                         objInput.onchange = function(evento){
 
-                            const valorEditado = evento.target.value;
+                            const valorEditado = evento.target.type == 'checkbox' 
+                                                    ? evento.target.checked
+                                                    : evento.target.value;
 
                             //Edita o objeto dados interno
                             contexto.setColunaAmostra( numLinha, numColuna, valorEditado );
@@ -10912,6 +11246,30 @@ window.WGrid.WGrid = class{
                                 statusColuna.editable.onChange.bind(contexto)( idInput, valorAtual, valorEditado, Number(numLinha), Number(numColuna), nomeColuna, statusColuna, contexto );
                             }
                         }
+
+                        objInput.addEventListener('keydown', function(eventoKeydown){
+                            if( eventoKeydown.key == 'Enter' ){
+                                
+                                const idColuna = eventoKeydown.target.getAttribute('_coluna');
+
+                                setTimeout(()=>{
+                                    const idProximaColunaEditavel = (contexto.editableMap[ idColuna ] || {}).indiceProximaColuna;
+
+                                    //Se existe uma proxima coluna editavel
+                                    if( idProximaColunaEditavel != undefined ){
+                                        document.getElementById(`input-coluna${ idProximaColunaEditavel }-linha${idLinha}-grid-${contexto.idElementoPai}`).click()
+                                    
+                                    //CASO NÂO EXISTA NENHUMA PROXIMA COLUNA EDITAVEL
+                                    }else{
+                                        //CRIA UMA NOVA AMOSTRA EM BRANCO
+                                        contexto.adicionarAmostra( Array(contexto.dados[0].length).fill('.') );
+                                        document.getElementById(`input-coluna${ 0 }-linha${idLinha+1}-grid-${contexto.idElementoPai}`).click()
+                                    }
+                                
+                                }, 100);
+
+                            }
+                        });
                     
                     }
 
